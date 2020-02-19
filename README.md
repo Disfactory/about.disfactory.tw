@@ -1,7 +1,9 @@
 ---
 home: true
-footer: Copyright © 2020
-permalink: /
+heroText: Disfactory 違章工廠舉報系統
+tagline: null
+actionText: 現在去舉報 →
+actionLink: https://disfactory.tw
 ---
 
 ### 這個網站要做什麼？

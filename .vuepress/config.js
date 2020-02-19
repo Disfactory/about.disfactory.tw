@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Disfactory 違章工廠舉報系統',
+  title: 'Disfactory 常見問題',
   description: '',
   themeConfig: {
     search: false
