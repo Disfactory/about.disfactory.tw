@@ -1,6 +1,19 @@
+import regions from './constants/regions.json'
+
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
+
+  generate: {
+    routes() {
+      return Promise.resolve(
+        // eslint-disable-next-line no-constant-condition
+        false
+          ? [regions.all].concat(regions.citiesAndCounties, regions.areas)
+          : [regions.all].concat(regions.citiesAndCounties)
+      )
+    },
+  },
 
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
