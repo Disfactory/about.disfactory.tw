@@ -22,6 +22,8 @@
     <BannerJoinUs />
 
     <ReportTutorial />
+
+    <AskedQuestions />
   </div>
 </template>
 
@@ -33,6 +35,7 @@ import FactoryDisplay from '~/components/FactoryDisplay.vue'
 import DataDisplay from '~/components/DataDisplay.vue'
 import BannerJoinUs from '~/components/BannerJoinUs.vue'
 import ReportTutorial from '~/components/ReportTutorial.vue'
+import AskedQuestions from '~/components/AskedQuestions.vue'
 
 import { getNumWithCommas } from '~/utils/index.js'
 
@@ -45,6 +48,7 @@ export default {
     DataDisplay,
     BannerJoinUs,
     ReportTutorial,
+    AskedQuestions,
   },
 
   setup(_, { root: { context: ctx } }) {

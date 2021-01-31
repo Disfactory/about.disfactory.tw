@@ -99,7 +99,7 @@ export default {
   }
 
   &__base-subtitle {
-    margin-bottom: 28px;
+    margin-bottom: 32px;
   }
 }
 

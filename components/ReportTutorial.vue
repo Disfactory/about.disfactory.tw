@@ -80,7 +80,7 @@ export default {
   }
 
   &__base-subtitle {
-    margin-bottom: 28px;
+    margin-bottom: 32px;
     @include media-breakpoint-up(lg) {
       margin-bottom: 72px;
     }
@@ -108,6 +108,7 @@ export default {
   img {
     width: 100%;
     max-width: 333px;
+    margin: 0 auto;
   }
 
   p {
@@ -148,15 +149,11 @@ export default {
     justify-content: center;
     align-items: center;
   }
-
-  img {
-    width: 151px;
-  }
 }
 
 .logo {
   width: 151px;
-  margin: 0 0 24px 0;
+  margin: 0 auto 24px auto;
   @include media-breakpoint-up(lg) {
     flex-shrink: 0;
     margin: 0 32px 0 0;

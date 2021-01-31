@@ -20,6 +20,7 @@ export default {
 h2 {
   font-weight: 700;
   font-size: 38px;
+  line-height: 1.5;
   color: #2b4754;
   letter-spacing: 2px;
   text-align: center;
