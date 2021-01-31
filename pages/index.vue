@@ -20,6 +20,8 @@
     />
 
     <BannerJoinUs />
+
+    <ReportTutorial />
   </div>
 </template>
 
@@ -30,13 +32,20 @@ import FactorySearch from '~/components/FactorySearch.vue'
 import FactoryDisplay from '~/components/FactoryDisplay.vue'
 import DataDisplay from '~/components/DataDisplay.vue'
 import BannerJoinUs from '~/components/BannerJoinUs.vue'
+import ReportTutorial from '~/components/ReportTutorial.vue'
 
 import { getNumWithCommas } from '~/utils/index.js'
 
 export default {
   name: 'Home',
 
-  components: { FactorySearch, FactoryDisplay, DataDisplay, BannerJoinUs },
+  components: {
+    FactorySearch,
+    FactoryDisplay,
+    DataDisplay,
+    BannerJoinUs,
+    ReportTutorial,
+  },
 
   setup(_, { root: { context: ctx } }) {
     const counts = reactive({

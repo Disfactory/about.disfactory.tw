@@ -1,6 +1,6 @@
 <template>
   <div class="data-display">
-    <h2>你知道嗎？</h2>
+    <BaseSubtitle text="你知道嗎？" class="data-display__base-subtitle" />
 
     <p class="description">
       沒有違章工廠的台灣農業區域，跟日本壓縮機一樣稀少<br />因為有被檢舉的違章工廠，也很稀少。
@@ -27,12 +27,18 @@
 <script>
 import { computed } from '@vue/composition-api'
 
-import SvgFactory from '~/assets/imgs/factory.svg?raw'
-import SvgPaper from '~/assets/imgs/paper.svg?raw'
-import SvgPhoto from '~/assets/imgs/take-a-photo.svg?raw'
+import BaseSubtitle from '~/components/BaseSubtitle.vue'
+
+import svgFactoryHtml from '~/assets/imgs/factory.svg?raw'
+import svgPaperHtml from '~/assets/imgs/paper.svg?raw'
+import svgPhotoHtml from '~/assets/imgs/take-a-photo.svg?raw'
 
 export default {
   name: 'DataDisplay',
+
+  components: {
+    BaseSubtitle,
+  },
 
   props: {
     totalFactories: {
@@ -56,21 +62,21 @@ export default {
     const items = computed(() => [
       {
         id: 1,
-        iconHtml: SvgFactory,
+        iconHtml: svgFactoryHtml,
         text1: '農地上有',
         num: props.totalFactories,
         text2: '間農地違章工廠',
       },
       {
         id: 2,
-        iconHtml: SvgPaper,
+        iconHtml: svgPaperHtml,
         text1: '只有',
         num: props.totalReportsRate,
         text2: '違規工廠<br />已遭檢舉',
       },
       {
         id: 3,
-        iconHtml: SvgPhoto,
+        iconHtml: svgPhotoHtml,
         text1: '目前',
         num: props.totalReports,
         text2: '人參與',
@@ -91,14 +97,10 @@ export default {
   @include media-breakpoint-up(lg) {
     padding: 80px 40px;
   }
-}
 
-h2 {
-  font-weight: 700;
-  font-size: 38px;
-  color: #2b4754;
-  letter-spacing: 2px;
-  margin-bottom: 28px;
+  &__base-subtitle {
+    margin-bottom: 28px;
+  }
 }
 
 .description {
@@ -156,7 +158,6 @@ h2 {
 
   &::v-deep svg {
     width: 100%;
-    height: auto;
     display: block;
   }
 }

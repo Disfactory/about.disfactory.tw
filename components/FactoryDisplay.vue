@@ -93,7 +93,6 @@ export default {
   z-index: -9;
   @include media-breakpoint-up(md) {
     width: 343px;
-    height: auto;
   }
 }
 
@@ -104,7 +103,6 @@ export default {
   transform: translateX(-50%);
   @include media-breakpoint-up(md) {
     width: 64px;
-    height: auto;
   }
   @include media-breakpoint-up(lg) {
     display: none;
@@ -187,7 +185,6 @@ export default {
   @include media-breakpoint-up(lg) {
     display: block;
     width: 54px;
-    height: auto;
     margin-right: 24px;
   }
 }
@@ -245,7 +242,6 @@ button {
   background-color: #fa6b62;
   border: 2px solid #fff;
   color: #fff;
-  text-decoration: none;
   margin-left: 6px;
 
   &:hover {

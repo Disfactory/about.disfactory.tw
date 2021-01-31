@@ -265,7 +265,6 @@ export default {
 
   svg {
     width: 100%;
-    height: auto;
   }
 }
 

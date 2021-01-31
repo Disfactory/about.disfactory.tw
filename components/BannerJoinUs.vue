@@ -35,7 +35,6 @@ export default {
 
 svg {
   width: 75px;
-  height: auto;
   margin: 0 0 20px 0;
   @include media-breakpoint-up(lg) {
     width: 93px;
