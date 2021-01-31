@@ -51,9 +51,9 @@ export default {
       default: '',
     },
     reportsCount: {
-      type: Number,
+      type: String,
       required: true,
-      default: undefined,
+      default: '',
     },
     region: {
       type: String,

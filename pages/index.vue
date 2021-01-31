@@ -12,21 +12,31 @@
         :region="region"
       />
     </div>
+
+    <DataDisplay
+      :totalFactories="factoriesCount"
+      :totalReports="reportsCount"
+      :totalReportsRate="reportsRate"
+    />
+
+    <BannerJoinUs />
   </div>
 </template>
 
 <script>
-import { reactive, computed, toRef, onBeforeMount } from '@vue/composition-api'
+import { reactive, computed, onBeforeMount } from '@vue/composition-api'
 
 import FactorySearch from '~/components/FactorySearch.vue'
 import FactoryDisplay from '~/components/FactoryDisplay.vue'
+import DataDisplay from '~/components/DataDisplay.vue'
+import BannerJoinUs from '~/components/BannerJoinUs.vue'
 
 import { getNumWithCommas } from '~/utils/index.js'
 
 export default {
   name: 'Home',
 
-  components: { FactorySearch, FactoryDisplay },
+  components: { FactorySearch, FactoryDisplay, DataDisplay, BannerJoinUs },
 
   setup(_, { root: { context: ctx } }) {
     const counts = reactive({
@@ -40,6 +50,13 @@ export default {
       }
 
       return getNumWithCommas(counts.factories)
+    })
+    const reportsCount = computed(() => {
+      if (counts.reports === undefined) {
+        return
+      }
+
+      return getNumWithCommas(counts.reports)
     })
     const region = computed(() => {
       if (counts.region === '全臺灣') {
@@ -57,6 +74,14 @@ export default {
       counts.reports = reports
       counts.region = region
     }
+
+    const reportsRate = computed(() => {
+      if (counts.reports === undefined || counts.factories === undefined) {
+        return ''
+      }
+
+      return `${((counts.reports / counts.factories) * 100).toFixed(2)}%`
+    })
 
     onBeforeMount(() => {
       fetchCount()
@@ -86,8 +111,9 @@ export default {
 
     return {
       factoriesCount,
-      reportsCount: toRef(counts, 'reports'),
+      reportsCount,
       region,
+      reportsRate,
 
       handleDisplayCounts,
     }
