@@ -9,7 +9,7 @@ export default {
       return Promise.resolve(
         // eslint-disable-next-line no-constant-condition
         false
-          ? [regions.all].concat(regions.citiesAndCounties, regions.areas)
+          ? [regions.all].concat(regions.citiesAndCounties, regions.towns)
           : [regions.all].concat(regions.citiesAndCounties)
       )
     },
@@ -33,14 +33,18 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['reset-css/reset.css'],
+  css: ['reset-css/reset.css', '~/assets/css/base.scss'],
 
   styleResources: {
     scss: ['~/assets/css/_variables.scss', '~/assets/css/mixins/*.scss'],
   },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/vue-plugins-global.js', '~/plugins/axios.js'],
+
+  proxy: {
+    '/api': 'https://api.disfactory.tw',
+  },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -53,16 +57,11 @@ export default {
     '@nuxtjs/stylelint-module',
     // https://github.com/nuxt-community/style-resources-module
     '@nuxtjs/style-resources',
+    // https://github.com/nuxt-community/svg-module
+    '@nuxtjs/svg',
   ],
 
-  // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
-  ],
-
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  modules: ['@nuxtjs/proxy'],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
