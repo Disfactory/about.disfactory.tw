@@ -26,6 +26,8 @@
     <CurrentResults :totalReports="reportsCount" />
 
     <AskedQuestions />
+
+    <MediaReport />
   </div>
 </template>
 
@@ -39,6 +41,7 @@ import BannerJoinUs from '~/components/BannerJoinUs.vue'
 import ReportTutorial from '~/components/ReportTutorial.vue'
 import CurrentResults from '~/components/CurrentResults.vue'
 import AskedQuestions from '~/components/AskedQuestions.vue'
+import MediaReport from '~/components/MediaReport.vue'
 
 import { getNumWithCommas } from '~/utils/index.js'
 
@@ -53,6 +56,7 @@ export default {
     ReportTutorial,
     CurrentResults,
     AskedQuestions,
+    MediaReport,
   },
 
   setup(_, { root: { context: ctx } }) {
