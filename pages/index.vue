@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <NavigationHeader />
+
     <div class="search">
       <FactorySearch
         class="search__factory-search"
@@ -14,6 +16,7 @@
     </div>
 
     <DataDisplay
+      id="do-you-know"
       :totalFactories="factoriesCount"
       :totalReports="reportsCount"
       :totalReportsRate="reportsRate"
@@ -21,13 +24,13 @@
 
     <BannerJoinUs />
 
-    <ReportTutorial />
+    <ReportTutorial id="report" />
 
-    <CurrentResults :totalReports="reportsCount" />
+    <CurrentResults id="current-results" :totalReports="reportsCount" />
 
-    <AskedQuestions />
+    <AskedQuestions id="faq" />
 
-    <MediaReport />
+    <MediaReport id="media" />
 
     <TheFooter />
   </div>
@@ -36,6 +39,7 @@
 <script>
 import { reactive, computed, onBeforeMount } from '@vue/composition-api'
 
+import NavigationHeader from '~/components/NavigationHeader.vue'
 import FactorySearch from '~/components/FactorySearch.vue'
 import FactoryDisplay from '~/components/FactoryDisplay.vue'
 import DataDisplay from '~/components/DataDisplay.vue'
@@ -52,6 +56,7 @@ export default {
   name: 'Home',
 
   components: {
+    NavigationHeader,
     FactorySearch,
     FactoryDisplay,
     DataDisplay,

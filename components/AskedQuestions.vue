@@ -43,7 +43,7 @@ import { reactive } from '@vue/composition-api'
 import BaseSubtitle from '~/components/BaseSubtitle.vue'
 
 import SvgOpen from '~/assets/imgs/open.svg?inline'
-import SvgClose from '~/assets/imgs/close.svg?inline'
+import SvgClose from '~/assets/imgs/close-negative.svg?inline'
 import SvgQ from '~/assets/imgs/q.svg?inline'
 
 export default {

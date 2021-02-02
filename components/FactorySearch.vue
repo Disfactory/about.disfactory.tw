@@ -240,11 +240,11 @@ export default {
   padding: 34px 16px 28px 16px;
   background-color: #fff3e0;
   z-index: 9;
+  position: relative;
   @include media-breakpoint-up(sm) {
     padding: 34px 16px 38px 16px;
   }
   @include media-breakpoint-up(md) {
-    position: relative;
     padding: 60px 0 38px 0;
   }
   @include media-breakpoint-up(xl) {

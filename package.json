@@ -28,6 +28,7 @@
     "core-js": "^3.8.2",
     "nuxt": "^2.14.12",
     "reset-css": "^5.0.1",
+    "scroll-into-view": "^1.15.0",
     "vue-select": "^3.11.2"
   },
   "devDependencies": {
