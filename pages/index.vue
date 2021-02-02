@@ -28,6 +28,8 @@
     <AskedQuestions />
 
     <MediaReport />
+
+    <TheFooter />
   </div>
 </template>
 
@@ -42,6 +44,7 @@ import ReportTutorial from '~/components/ReportTutorial.vue'
 import CurrentResults from '~/components/CurrentResults.vue'
 import AskedQuestions from '~/components/AskedQuestions.vue'
 import MediaReport from '~/components/MediaReport.vue'
+import TheFooter from '~/components/TheFooter.vue'
 
 import { getNumWithCommas } from '~/utils/index.js'
 
@@ -57,6 +60,7 @@ export default {
     CurrentResults,
     AskedQuestions,
     MediaReport,
+    TheFooter,
   },
 
   setup(_, { root: { context: ctx } }) {
