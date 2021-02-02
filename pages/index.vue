@@ -23,6 +23,8 @@
 
     <ReportTutorial />
 
+    <CurrentResults :totalReports="reportsCount" />
+
     <AskedQuestions />
   </div>
 </template>
@@ -35,6 +37,7 @@ import FactoryDisplay from '~/components/FactoryDisplay.vue'
 import DataDisplay from '~/components/DataDisplay.vue'
 import BannerJoinUs from '~/components/BannerJoinUs.vue'
 import ReportTutorial from '~/components/ReportTutorial.vue'
+import CurrentResults from '~/components/CurrentResults.vue'
 import AskedQuestions from '~/components/AskedQuestions.vue'
 
 import { getNumWithCommas } from '~/utils/index.js'
@@ -48,6 +51,7 @@ export default {
     DataDisplay,
     BannerJoinUs,
     ReportTutorial,
+    CurrentResults,
     AskedQuestions,
   },
 
@@ -97,9 +101,9 @@ export default {
     })
 
     onBeforeMount(() => {
-      fetchCount()
+      fetchCounts()
 
-      async function fetchCount() {
+      async function fetchCounts() {
         try {
           const [factoriesResponse, reportsResponse] = await Promise.all([
             ctx.$fetchDisfactoryData('/api/statistics/factories'),

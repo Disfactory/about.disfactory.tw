@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@nuxtjs/proxy": "^2.1.0",
+    "@toast-ui/vue-chart": "^4.0.3",
     "@vue/composition-api": "^1.0.0-rc.1",
     "axios": "^0.21.1",
     "core-js": "^3.8.2",

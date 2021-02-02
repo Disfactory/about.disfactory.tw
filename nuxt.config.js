@@ -64,5 +64,10 @@ export default {
   modules: ['@nuxtjs/proxy'],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    extend(config) {
+      // for @toast-ui/vue-chart
+      config.resolve.alias.vue = 'vue/dist/vue.common.js'
+    },
+  },
 }
