@@ -43,7 +43,7 @@ export default {
   plugins: ['~/plugins/vue-plugins-global.js', '~/plugins/axios.js'],
 
   proxy: {
-    '/api': 'https://api.disfactory.tw',
+    '/api': 'https://staging.disfactory.tw',
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components

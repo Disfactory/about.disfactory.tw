@@ -10,13 +10,13 @@
           <SvgSign class="sign-left" />
 
           <p>
-            <span>{{ factoriesCount }}</span
+            <span>{{ factories }}</span
             >工廠
           </p>
         </div>
         <p class="reports-count">
-          {{ region }}有 {{ factoriesCount }}+ 疑似農地違章工廠<span>，</span
-          ><br />有 {{ reportsCount }} 家已被檢舉
+          {{ region }}有 {{ factories }}+ 疑似農地違章工廠<span>，</span
+          ><br />有 {{ documents }} 家已被檢舉
         </p>
       </div>
 
@@ -45,17 +45,17 @@ export default {
   },
 
   props: {
-    factoriesCount: {
-      type: String,
-      required: true,
-      default: '',
-    },
-    reportsCount: {
-      type: String,
-      required: true,
-      default: '',
-    },
     region: {
+      type: String,
+      required: true,
+      default: '',
+    },
+    factories: {
+      type: String,
+      required: true,
+      default: '',
+    },
+    documents: {
       type: String,
       required: true,
       default: '',

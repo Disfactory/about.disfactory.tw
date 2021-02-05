@@ -23,9 +23,9 @@
               />
 
               <VueSelect
-                v-model="form.cityOrCounty"
+                v-model="form.city"
                 class="v-select--city"
-                :options="CITIES_AND_COUNTIES"
+                :options="CITIES"
                 placeholder="縣市"
                 :searchable="false"
                 :clearable="false"
@@ -38,7 +38,7 @@
               <VueSelect
                 v-model="form.town"
                 class="v-select--town"
-                :options="townsInCityOrCounty"
+                :options="townsInCity"
                 :placeholder="canSelectTown ? '鄉鎮市區' : '---'"
                 :disabled="!canSelectTown"
                 :searchable="false"
@@ -63,10 +63,7 @@
 <script>
 import { ref, reactive, computed, watch } from '@vue/composition-api'
 import VueSelect from 'vue-select'
-import {
-  citiesAndCounties as CITIES_AND_COUNTIES,
-  towns as TOWNS,
-} from '~/constants/regions.json'
+import { cities as CITIES, towns as TOWNS } from '~/constants/regions.json'
 
 import SvgTitle from '~/assets/imgs/title.svg?inline'
 import SvgMeat from '~/assets/imgs/meat.svg?inline'
@@ -89,47 +86,44 @@ export default {
     SvgTriangle,
   },
 
-  setup(_, { emit, root: { context: ctx } }) {
+  setup(_, { emit, root, root: { context: ctx } }) {
     const form = reactive({
       zipCode: undefined,
-      cityOrCounty: '',
+      city: '',
       town: '',
     })
-    const townsInCityOrCounty = computed(() => {
-      if (form.cityOrCounty === '') {
+    const townsInCity = computed(() => {
+      if (form.city === '') {
         return []
       }
 
-      return Object.keys(TOWNS[CITIES_AND_COUNTIES.indexOf(form.cityOrCounty)])
+      return Object.keys(TOWNS[CITIES.indexOf(form.city)])
     })
     const canSelectTown = computed(() => {
-      return form.cityOrCounty !== ''
+      return form.city !== ''
     })
 
     const wasSetFromOtherInputs = ref('false')
-    watch(
-      [() => form.cityOrCounty, () => form.town],
-      function ([cityOrCounty, town]) {
-        if (wasSetFromOtherInputs.value) {
-          wasSetFromOtherInputs.value = false
+    watch([() => form.city, () => form.town], function ([city, town]) {
+      if (wasSetFromOtherInputs.value) {
+        wasSetFromOtherInputs.value = false
 
-          return
-        }
+        return
+      }
 
-        if (cityOrCounty !== '' && town !== '') {
-          const zipCode = TOWNS[CITIES_AND_COUNTIES.indexOf(cityOrCounty)][town]
+      if (city !== '' && town !== '') {
+        const zipCode = TOWNS[CITIES.indexOf(city)][town]
 
-          if (zipCode !== undefined) {
-            form.zipCode = zipCode
+        if (zipCode !== undefined) {
+          form.zipCode = zipCode
 
-            wasSetFromOtherInputs.value = true
-          } else {
-            form.zipCode = undefined
-            form.town = ''
-          }
+          wasSetFromOtherInputs.value = true
+        } else {
+          form.zipCode = undefined
+          form.town = ''
         }
       }
-    )
+    })
 
     watch(
       () => form.zipCode,
@@ -145,23 +139,19 @@ export default {
         }
 
         if (zipCode.toString().length !== 3) {
-          form.cityOrCounty = ''
+          form.city = ''
           form.town = ''
 
           return
         }
 
         for (let i = 0; i < TOWNS.length; i += 1) {
-          const townsInCityOrCounty = TOWNS[i]
-          const idxOfTownInCityOrCounty = Object.values(
-            townsInCityOrCounty
-          ).indexOf(zipCode)
+          const townsInCity = TOWNS[i]
+          const idxOfTownInCity = Object.values(townsInCity).indexOf(zipCode)
 
-          if (idxOfTownInCityOrCounty !== -1) {
-            form.cityOrCounty = CITIES_AND_COUNTIES[i]
-            form.town = Object.keys(townsInCityOrCounty)[
-              idxOfTownInCityOrCounty
-            ]
+          if (idxOfTownInCity !== -1) {
+            form.city = CITIES[i]
+            form.town = Object.keys(townsInCity)[idxOfTownInCity]
 
             wasSetFromOtherInputs.value = true
 
@@ -169,61 +159,73 @@ export default {
           }
         }
 
-        form.cityOrCounty = ''
+        form.city = ''
         form.town = ''
       }
     )
 
+    if (root.$route.path === '/') {
+      search()
+    }
+
     async function search() {
-      let factoriesResponse = {}
-      let reportsResponse = {}
-      let region = ''
+      let stats = {
+        region: undefined,
+        factories: undefined,
+        documents: undefined,
+      }
 
       try {
-        if (form.cityOrCounty === '') {
-          region = '全臺灣'
-          ;[factoriesResponse, reportsResponse] = await Promise.all([
-            ctx.$fetchDisfactoryData('/api/statistics/factories'),
-            ctx.$fetchDisfactoryData('/api/statistics/report_records'),
-          ])
+        if (form.city === '') {
+          const { factories, documents } = await ctx.$fetchDisfactoryData(
+            '/api/statistics/factories'
+          )
+
+          stats = {
+            region: '全臺灣',
+            factories,
+            documents,
+          }
         } else if (form.town === '') {
-          region = form.cityOrCounty
-          ;[factoriesResponse, reportsResponse] = await Promise.all([
-            ctx.$fetchDisfactoryData(
-              `/api/statistics/factories?townname=${region}`
-            ),
-            ctx.$fetchDisfactoryData(
-              `/api/statistics/report_records?townname=${region}`
-            ),
-          ])
+          const region = form.city
+          const { cities = {} } = await ctx.$fetchDisfactoryData(
+            `/api/statistics/factories?townname=${region}`
+          )
+          const { factories, documents } = cities?.[region] || {}
+
+          stats = {
+            region,
+            factories,
+            documents,
+          }
         } else {
-          region = `${form.cityOrCounty}${form.town}`
-          ;[factoriesResponse, reportsResponse] = await Promise.all([
-            ctx.$fetchDisfactoryData(
-              `/api/statistics/factories?townname=${region}`
-            ),
-            ctx.$fetchDisfactoryData(
-              `/api/statistics/report_records?townname=${region}`
-            ),
-          ])
+          const region = `${form.city}${form.town}`
+          const { cities = {} } = await ctx.$fetchDisfactoryData(
+            `/api/statistics/factories?townname=${region}`
+          )
+
+          const { factories, documents } =
+            cities?.[form.city]?.towns?.[form.town] || {}
+
+          stats = {
+            region,
+            factories,
+            documents,
+          }
         }
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err)
       }
 
-      emit('displayCounts', {
-        factories: factoriesResponse?.count,
-        reports: reportsResponse?.count,
-        region,
-      })
+      emit('displayStats', stats)
     }
 
     return {
       form,
       canSelectTown,
-      CITIES_AND_COUNTIES,
-      townsInCityOrCounty,
+      CITIES,
+      townsInCity,
 
       search,
     }
@@ -240,7 +242,6 @@ export default {
   padding: 34px 16px 28px 16px;
   background-color: #fff3e0;
   z-index: 9;
-  position: relative;
   @include media-breakpoint-up(sm) {
     padding: 34px 16px 38px 16px;
   }
@@ -249,6 +250,7 @@ export default {
   }
   @include media-breakpoint-up(xl) {
     padding: 60px 6.8% 38px 0;
+    position: relative;
   }
 }
 
@@ -281,11 +283,12 @@ export default {
   @include media-breakpoint-up(md) {
     display: block;
     position: absolute;
-    bottom: 32px;
+    top: -56px;
     left: 0;
     transform: translateX(-50%);
   }
   @include media-breakpoint-up(lg) {
+    top: auto;
     bottom: 28px;
     transform: translateX(-72%);
   }

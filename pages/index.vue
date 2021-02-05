@@ -5,28 +5,31 @@
     <div class="search">
       <FactorySearch
         class="search__factory-search"
-        @displayCounts="handleDisplayCounts"
+        @displayStats="handleDisplayStats"
       />
       <FactoryDisplay
         class="search__factory-display"
-        :factoriesCount="factoriesCount"
-        :reportsCount="reportsCount"
+        :factories="factories"
+        :documents="documents"
         :region="region"
       />
     </div>
 
     <DataDisplay
       id="do-you-know"
-      :totalFactories="factoriesCount"
-      :totalReports="reportsCount"
-      :totalReportsRate="reportsRate"
+      :totalFactories="totalFactories"
+      :totalReportRecords="totalReportRecords"
+      :totalDocumentsRate="totalDocumentsRate"
     />
 
     <BannerJoinUs />
 
     <ReportTutorial id="report" />
 
-    <CurrentResults id="current-results" :totalReports="reportsCount" />
+    <CurrentResults
+      id="current-results"
+      :totalReportRecords="totalReportRecords"
+    />
 
     <AskedQuestions id="faq" />
 
@@ -37,7 +40,7 @@
 </template>
 
 <script>
-import { reactive, computed, onBeforeMount } from '@vue/composition-api'
+import { ref, computed, onBeforeMount } from '@vue/composition-api'
 
 import NavigationHeader from '~/components/NavigationHeader.vue'
 import FactorySearch from '~/components/FactorySearch.vue'
@@ -69,65 +72,80 @@ export default {
   },
 
   setup(_, { root: { context: ctx } }) {
-    const counts = reactive({
+    const totalStats = ref({
       factories: undefined,
-      reports: undefined,
-      region: '',
+      documents: undefined,
+      reportRecords: undefined,
     })
-    const factoriesCount = computed(() => {
-      if (counts.factories === undefined) {
-        return
-      }
-
-      return getNumWithCommas(counts.factories)
-    })
-    const reportsCount = computed(() => {
-      if (counts.reports === undefined) {
-        return
-      }
-
-      return getNumWithCommas(counts.reports)
-    })
-    const region = computed(() => {
-      if (counts.region === '全臺灣') {
-        return counts.region
-      }
-
-      if (counts.region.startsWith('南海諸島')) {
-        return `${counts.region.slice(0, 4)} ${counts.region.slice(4)}`
-      }
-
-      return `${counts.region.slice(0, 3)} ${counts.region.slice(3)}`
-    })
-    function setCounts({ factories, reports, region }) {
-      counts.factories = factories
-      counts.reports = reports
-      counts.region = region
-    }
-
-    const reportsRate = computed(() => {
-      if (counts.reports === undefined || counts.factories === undefined) {
+    const totalFactories = formatNum(totalStats, 'factories')
+    const totalReportRecords = formatNum(totalStats, 'reportRecords')
+    const totalDocumentsRate = computed(() => {
+      if (
+        totalStats.value.factories === undefined ||
+        totalStats.value.documents === undefined
+      ) {
         return ''
       }
 
-      return `${((counts.reports / counts.factories) * 100).toFixed(2)}%`
+      return `${(
+        (totalStats.value.documents / totalStats.value.factories) *
+        100
+      ).toFixed(2)}%`
     })
 
+    const stats = ref({
+      region: undefined,
+      factories: undefined,
+      documents: undefined,
+    })
+    const factories = formatNum(stats, 'factories')
+    const documents = formatNum(stats, 'documents')
+    const region = computed(() => {
+      const { region } = stats.value
+
+      if (region === undefined) {
+        return
+      }
+
+      if (region === '全臺灣') {
+        return region
+      }
+
+      if (region.startsWith('南海諸島')) {
+        return `${region.slice(0, 4)} ${region.slice(4)}`
+      }
+
+      return `${region.slice(0, 3)} ${region.slice(3)}`
+    })
+
+    function formatNum(stats, name) {
+      return computed(() => {
+        const stat = stats.value[name]
+
+        if (stat === undefined) {
+          return ''
+        }
+
+        return getNumWithCommas(stat)
+      })
+    }
+
     onBeforeMount(() => {
-      fetchCounts()
+      fetchTotalStats()
 
-      async function fetchCounts() {
+      async function fetchTotalStats() {
         try {
-          const [factoriesResponse, reportsResponse] = await Promise.all([
-            ctx.$fetchDisfactoryData('/api/statistics/factories'),
-            ctx.$fetchDisfactoryData('/api/statistics/report_records'),
-          ])
+          const {
+            factories,
+            documents,
+            report_records: reportRecords,
+          } = await ctx.$fetchDisfactoryData('/api/statistics/factories')
 
-          setCounts({
-            factories: factoriesResponse?.count,
-            reports: reportsResponse?.count,
-            region: '全臺灣',
-          })
+          totalStats.value = {
+            factories,
+            documents,
+            reportRecords,
+          }
         } catch (err) {
           // eslint-disable-next-line no-console
           console.error(err)
@@ -135,17 +153,20 @@ export default {
       }
     })
 
-    function handleDisplayCounts(data) {
-      setCounts(data)
+    function handleDisplayStats(data) {
+      stats.value = data
     }
 
     return {
-      factoriesCount,
-      reportsCount,
-      region,
-      reportsRate,
+      totalFactories,
+      totalReportRecords,
+      totalDocumentsRate,
 
-      handleDisplayCounts,
+      region,
+      factories,
+      documents,
+
+      handleDisplayStats,
     }
   },
 }
@@ -153,6 +174,7 @@ export default {
 
 <style lang="scss" scoped>
 .search {
+  position: relative;
   @include media-breakpoint-up(lg) {
     display: flex;
   }

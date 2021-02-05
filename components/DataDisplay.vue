@@ -8,17 +8,16 @@
 
     <div class="container">
       <div v-for="item in items" :key="item.id" class="data">
-        <!-- eslint-disable vue/no-v-html -->
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <div class="icon" v-html="item.iconHtml"></div>
 
         <div class="text">
           <p>{{ item.text1 }}</p>
           <p>
             <span class="num">{{ item.num }}</span
-            ><span v-html="item.text2"></span>
+            ><span>{{ item.text2 }}</span>
           </p>
         </div>
-        <!-- eslint-enable vue/no-v-html -->
       </div>
     </div>
   </div>
@@ -46,12 +45,12 @@ export default {
       required: true,
       default: '',
     },
-    totalReports: {
+    totalReportRecords: {
       type: String,
       required: true,
       default: '',
     },
-    totalReportsRate: {
+    totalDocumentsRate: {
       type: String,
       required: true,
       default: '',
@@ -71,14 +70,14 @@ export default {
         id: 2,
         iconHtml: svgPaperHtml,
         text1: '只有',
-        num: props.totalReportsRate,
-        text2: '違規工廠<br />已遭檢舉',
+        num: props.totalDocumentsRate,
+        text2: '違規工廠已遭地球公民檢舉',
       },
       {
         id: 3,
         iconHtml: svgPhotoHtml,
         text1: '目前',
-        num: props.totalReports,
+        num: props.totalReportRecords,
         text2: '人參與',
       },
     ])

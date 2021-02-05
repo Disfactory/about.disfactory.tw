@@ -19,16 +19,16 @@
         <p>累積回報數量 / 疑似違章工廠數量 %</p>
       </div>
 
-      <div v-if="theLastCityOrCounty" class="message">
+      <div v-if="theLastCity" class="message">
         <SvgDialog />
-        <p>{{ theLastCityOrCounty }}民眾要加油囉！👊</p>
+        <p>{{ theLastCity }}民眾要加油囉！👊</p>
       </div>
     </div>
 
     <div class="result result--call">
       <h3>眾志成城，還差你一個！</h3>
       <SvgPhotoHtml />
-      <div class="num">{{ totalReports }}</div>
+      <div class="num">{{ totalReportRecords }}</div>
       <div>累積回報人次</div>
     </div>
 
@@ -44,7 +44,7 @@
         />
       </div>
 
-      <p class="note">備註：台東縣和澎湖縣還沒有民眾參與回報</p>
+      <p class="note">備註：{{ citiesNoDocuments.join('、') }}還沒有檢舉成案</p>
     </div>
   </div>
 </template>
@@ -75,7 +75,7 @@ export default {
   },
 
   props: {
-    totalReports: {
+    totalReportRecords: {
       type: String,
       required: true,
       default: '',
@@ -85,44 +85,56 @@ export default {
   setup(_, { root: { context: ctx } }) {
     const reportRates = ref([])
     const progresses = ref([])
+    const citiesNoDocuments = ref([])
 
     onMounted(function () {
-      fetchTotal()
+      fetchStatsTotal()
 
-      async function fetchTotal() {
-        const totalResponse = await ctx.$fetchDisfactoryData(
-          '/api/statistics/total'
-        )
-        const entries = Object.entries(totalResponse).filter(
+      async function fetchStatsTotal() {
+        const response = await ctx.$fetchDisfactoryData('/api/statistics/total')
+        const entries = Object.entries(response).filter(
           function doesHaveFactories([_, data]) {
             return data.factories > 0
           }
         )
 
         reportRates.value = entries
-          .map(function extractReportRate([cityOrCounty, data]) {
+          .map(function getReportRate([city, data]) {
             return {
-              cityOrCounty,
+              city,
               value: Number(
                 ((data.report_records / data.factories) * 100).toFixed(2)
               ),
             }
           })
-          .sort(function descendByValue(a, b) {
+          .sort(function ascendByValue(a, b) {
             return b.value - a.value
           })
 
-        progresses.value = entries.map(function extractProgress([
-          cityOrCounty,
-          data,
-        ]) {
-          return {
-            cityOrCounty,
-            value: [data.未處理, data.處理中, data.已斷電, data.已拆除],
-          }
-        })
+        progresses.value = entries
+          .map(function getProgress([city, data]) {
+            return {
+              city,
+              value: [data.未處理, data.處理中, data.已斷電, data.已拆除],
+            }
+          })
+          .sort(function descendBySum(a, b) {
+            return sum(a.value) - sum(b.value)
+          })
+
+        citiesNoDocuments.value = entries
+          .filter(function doesHaveNoDocuments([_, data]) {
+            return data.documents === 0
+          })
+          .map(function getCity([city]) {
+            return city
+          })
       }
     })
+
+    function sum(nums) {
+      return nums.reduce((acc, cur) => acc + cur)
+    }
 
     const commonOptions = {
       exportMenu: { visible: false },
@@ -165,11 +177,11 @@ export default {
           }
 
           return {
-            categories: reportRates.value.map(extractCityOrCounty),
+            categories: reportRates.value.map(getCity),
             series: [
               {
                 name: '回報率',
-                data: reportRates.value.map(extractValue),
+                data: reportRates.value.map(getValue),
               },
             ],
           }
@@ -198,9 +210,9 @@ export default {
         return {
           categories: {
             x: ['未處理', '處理中', '已斷電', '已拆除'],
-            y: progresses.value.map(extractCityOrCounty),
+            y: progresses.value.map(getCity),
           },
-          series: progresses.value.map(extractValue),
+          series: progresses.value.map(getValue),
         }
       }),
       options: {
@@ -235,21 +247,23 @@ export default {
       return `${num}%`
     }
 
-    function extractCityOrCounty(item) {
-      return item.cityOrCounty
+    function getCity(item) {
+      return item.city
     }
-    function extractValue(item) {
+    function getValue(item) {
       return item.value
     }
 
-    const theLastCityOrCounty = computed(() => {
-      return reportRates.value[reportRates.value.length - 1]?.cityOrCounty || ''
+    const theLastCity = computed(() => {
+      return reportRates.value[reportRates.value.length - 1]?.city || ''
     })
 
     return {
       reportsRateBarChart,
+      theLastCity,
+
       progressHeatmapChart,
-      theLastCityOrCounty,
+      citiesNoDocuments,
     }
   },
 }
