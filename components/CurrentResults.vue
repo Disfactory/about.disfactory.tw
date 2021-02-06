@@ -118,8 +118,8 @@ export default {
               value: [data.未處理, data.處理中, data.已斷電, data.已拆除],
             }
           })
-          .sort(function descendBySum(a, b) {
-            return sum(a.value) - sum(b.value)
+          .sort(function ascendByNotBeProcessed(a, b) {
+            return b.value[0] - a.value[0]
           })
 
         citiesNoDocuments.value = entries
@@ -131,10 +131,6 @@ export default {
           })
       }
     })
-
-    function sum(nums) {
-      return nums.reduce((acc, cur) => acc + cur)
-    }
 
     const commonOptions = {
       exportMenu: { visible: false },
@@ -212,19 +208,51 @@ export default {
             x: ['未處理', '處理中', '已斷電', '已拆除'],
             y: progresses.value.map(getCity),
           },
-          series: progresses.value.map(getValue),
+          series: progresses.value.map(getValue).reverse(),
         }
       }),
       options: {
         chart: createChartInOptions(progresses),
         xAxis: { label: { margin: 4 } },
         yAxis: { label: { margin: 16 } },
-        tooltip: { formatter: (value) => `${value} 件` },
+        tooltip: {
+          formatter: (value) => `${value} 件`,
+          template(model, _, theme) {
+            const {
+              background,
+              borderColor,
+              borderWidth,
+              borderStyle,
+              borderRadius,
+            } = theme
+
+            const [item] = model.data
+            const [x, y] = item.label.split(', ')
+            const cities = progressHeatmapChart.data.value.categories.y
+            const label = `${x}, ${
+              cities[cities.length - cities.indexOf(y) - 1]
+            }`
+
+            return `
+              <div class="toastui-chart-tooltip" style="border: ${borderWidth}px ${borderStyle} ${borderColor}; border-radius: ${borderRadius}px; background: ${background};">
+                <div class="toastui-chart-tooltip-category" style="font-weight: bold; font-family: Arial, sans-serif; font-size: 13px; color: #ffffff;">${label}</div>
+                <div class="toastui-chart-tooltip-series-wrapper" style="font-weight: normal; font-family: Arial, sans-serif; font-size: 12px; color: #ffffff;">
+                  <div class="toastui-chart-tooltip-series">
+                    <span class="toastui-chart-series-name">
+                      <i class="toastui-chart-icon" style="background: ${item.color}"></i>
+                      <span class="toastui-chart-name">${item.formattedValue}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            `
+          },
+        },
         legend: { align: 'bottom', width: 256 },
         series: { dataLabels: { visible: true } },
         theme: {
           series: {
-            startColor: '#fff9e6',
+            startColor: '#ececec',
             endColor: '#b82118',
             borderWidth: 1,
             dataLabels: { color: '#333' },
@@ -259,6 +287,7 @@ export default {
     })
 
     return {
+      progresses,
       reportsRateBarChart,
       theLastCity,
 
