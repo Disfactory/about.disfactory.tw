@@ -26,6 +26,7 @@
     "@vue/composition-api": "^1.0.0-rc.1",
     "axios": "^0.21.1",
     "canvas": "^2.6.1",
+    "clipboard-copy": "^4.0.1",
     "core-js": "^3.8.2",
     "imagemin": "^7.0.1",
     "imagemin-pngquant": "^9.0.1",

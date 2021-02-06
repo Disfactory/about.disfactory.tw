@@ -21,7 +21,7 @@
       </div>
 
       <div class="actions">
-        <button type="button">分享</button>
+        <button type="button" @click="share">分享</button>
         <a class="where" href="https://disfactory.tw/" target="_blank"
           >在哪裏？！</a
         >
@@ -35,6 +35,8 @@
 <script>
 import SvgFactory from '~/assets/imgs/factory-pink.svg?inline'
 import SvgSign from '~/assets/imgs/sign.svg?inline'
+
+import { OG_TITLE } from '~/constants/meta.js'
 
 export default {
   name: 'FactoryDisplay',
@@ -60,6 +62,42 @@ export default {
       required: true,
       default: '',
     },
+  },
+
+  setup() {
+    function share() {
+      const text =
+        '🧧我肚子裡的年菜有被工廠加料嗎？🧧\n\r#農地違章工廠 #即報即拆 #拒絕污染 #加入回報 #disfactory'
+      const url = document.location.href
+      const copiedText = `${text}\n\r${url}`
+
+      if (navigator.share) {
+        navigator
+          .share({
+            title: OG_TITLE,
+            text,
+            url,
+          })
+          .catch(function rejected(err) {
+            // eslint-disable-next-line no-console
+            console.error(err)
+
+            copy(copiedText)
+          })
+      } else {
+        copy(copiedText)
+      }
+    }
+
+    async function copy(text) {
+      const clipboardCopy = (await import('clipboard-copy')).default
+
+      clipboardCopy(text)
+    }
+
+    return {
+      share,
+    }
   },
 }
 </script>

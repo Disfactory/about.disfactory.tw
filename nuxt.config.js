@@ -1,7 +1,7 @@
 import { cities, towns } from './constants/regions.json'
+import { OG_TITLE } from './constants/meta.js'
 
 const isProdEnv = process.env.NODE_ENV === 'production'
-
 const BASE_URL = isProdEnv ? '/about.disfactory.tw/' : '/'
 
 export default {
@@ -48,7 +48,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: '農地違章工廠回報 | 地球公民基金會',
+    title: OG_TITLE,
     htmlAttrs: {
       lang: 'zh-Hant',
     },
