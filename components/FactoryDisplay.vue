@@ -6,7 +6,7 @@
 
     <div class="container">
       <div class="text">
-        <div class="factories-count">
+        <div class="factories">
           <SvgSign class="sign-left" />
 
           <p>
@@ -14,14 +14,17 @@
             >工廠
           </p>
         </div>
-        <p class="reports-count">
+        <p class="documents">
           {{ region }}有 {{ factories }}+ 疑似農地違章工廠<span>，</span
           ><br />有 {{ documents }} 家已被檢舉
         </p>
       </div>
 
       <div class="actions">
-        <button type="button" @click="share">分享</button>
+        <div class="share">
+          <button type="button" @click="share">分享</button>
+          <p v-if="shouldResponse">已複製連結！</p>
+        </div>
         <a class="where" href="https://disfactory.tw/" target="_blank"
           >在哪裏？！</a
         >
@@ -33,6 +36,7 @@
 </template>
 
 <script>
+import { ref } from '@vue/composition-api'
 import SvgFactory from '~/assets/imgs/factory-pink.svg?inline'
 import SvgSign from '~/assets/imgs/sign.svg?inline'
 
@@ -65,25 +69,25 @@ export default {
   },
 
   setup() {
-    function share() {
+    async function share() {
       const text =
         '🧧我肚子裡的年菜有被工廠加料嗎？🧧\n\r#農地違章工廠 #即報即拆 #拒絕污染 #加入回報 #disfactory'
       const url = document.location.href
       const copiedText = `${text}\n\r${url}`
 
       if (navigator.share) {
-        navigator
-          .share({
+        try {
+          await navigator.share({
             title: OG_TITLE,
             text,
             url,
           })
-          .catch(function rejected(err) {
-            // eslint-disable-next-line no-console
-            console.error(err)
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error(err)
 
-            copy(copiedText)
-          })
+          copy(copiedText)
+        }
       } else {
         copy(copiedText)
       }
@@ -91,12 +95,26 @@ export default {
 
     async function copy(text) {
       const clipboardCopy = (await import('clipboard-copy')).default
+      await clipboardCopy(text)
 
-      clipboardCopy(text)
+      response()
+    }
+
+    const shouldResponse = ref(false)
+    let timeoutId
+    function response() {
+      clearTimeout(timeoutId)
+
+      shouldResponse.value = true
+
+      timeoutId = setTimeout(function closeResponse() {
+        shouldResponse.value = false
+      }, 1500)
     }
 
     return {
       share,
+      shouldResponse,
     }
   },
 }
@@ -106,7 +124,7 @@ export default {
 .factory-display {
   background-color: #fa6b62;
   position: relative;
-  padding: 64px 22px 8px 22px;
+  padding: 64px 22px 16px 22px;
   z-index: 9;
   color: #fff;
   text-align: center;
@@ -171,7 +189,7 @@ export default {
   }
 }
 
-.factories-count {
+.factories {
   font-weight: 700;
   font-size: 25px;
   line-height: 1.36;
@@ -227,7 +245,7 @@ export default {
   }
 }
 
-.reports-count {
+.documents {
   span {
     @include media-breakpoint-up(md) {
       display: none;
@@ -244,31 +262,52 @@ export default {
 
 .actions {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   max-width: 325px;
   margin: 0 auto;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
   @include media-breakpoint-up(md) {
     margin-bottom: 0;
   }
 }
 
-button,
+.share,
 .where {
-  border-radius: 55px;
   font-size: 20px;
   font-weight: 700;
-  padding: 12px 0;
   width: 150px;
+  height: 54px;
   box-sizing: border-box;
 }
 
+button,
+.where {
+  border-radius: 55px;
+}
+
+.share {
+  position: relative;
+  margin-right: 6px;
+
+  p {
+    position: absolute;
+    font-size: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    font-weight: 500;
+    margin-top: 8px;
+  }
+}
+
 button {
+  width: 100%;
+  height: 100%;
   background-color: #fff;
   border: none;
   color: #457287;
   box-shadow: 0 2px 6px rgba(#000, 0.25);
-  margin-right: 6px;
 
   &:hover {
     background-color: #457287;
@@ -281,6 +320,9 @@ button {
   border: 2px solid #fff;
   color: #fff;
   margin-left: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     background-color: #ec554c;
