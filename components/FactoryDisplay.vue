@@ -284,6 +284,7 @@ export default {
 button,
 .where {
   border-radius: 55px;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
 .share {

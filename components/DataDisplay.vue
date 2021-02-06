@@ -7,18 +7,24 @@
     </p>
 
     <div class="container">
-      <div v-for="item in items" :key="item.id" class="data">
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="icon" v-html="item.iconHtml"></div>
+      <div class="wrapper">
+        <div v-for="item in items" :key="item.id" class="data">
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <div class="icon" v-html="item.iconHtml"></div>
 
-        <div class="text">
-          <p>{{ item.text1 }}</p>
-          <p>
-            <span class="num">{{ item.num }}</span
-            ><span>{{ item.text2 }}</span>
-          </p>
+          <div class="text">
+            <p>{{ item.text1 }}</p>
+            <p>
+              <!-- eslint-disable vue/no-v-html -->
+              <span class="num">{{ item.num }}</span
+              ><span v-html="item.text2"></span>
+              <!-- eslint-enable vue/no-v-html -->
+            </p>
+          </div>
         </div>
       </div>
+
+      <p class="note">資料來源｜農委會農業及農地資源盤查結果、本回報系統</p>
     </div>
   </div>
 </template>
@@ -71,14 +77,14 @@ export default {
         iconHtml: svgPaperHtml,
         text1: '只有',
         num: props.totalDocumentsRate,
-        text2: '違規工廠已遭地球公民檢舉',
+        text2: '違規工廠已遭<br />地球公民檢舉',
       },
       {
         id: 3,
         iconHtml: svgPhotoHtml,
         text1: '目前',
         num: props.totalReportRecords,
-        text2: '人參與',
+        text2: '<br />人參與',
       },
     ])
 
@@ -93,6 +99,7 @@ export default {
 .data-display {
   padding: 40px 24px;
   text-align: center;
+  position: relative;
   @include media-breakpoint-up(lg) {
     padding: 80px 40px;
   }
@@ -108,11 +115,16 @@ export default {
 }
 
 .container {
+  margin: 0 auto;
+  max-width: 1100px; // 350 * 3 + 70 * 2
+}
+
+.wrapper {
   display: inline-block;
+  margin-bottom: 40px;
   @include media-breakpoint-up(lg) {
     display: flex;
-    margin: 0 auto;
-    max-width: 1100px; // 350 * 3 + 70 * 2
+    margin-bottom: 48px;
     align-items: flex-start;
     justify-content: space-between;
   }
@@ -122,9 +134,16 @@ export default {
   font-weight: 700;
   font-size: 24px;
   line-height: 1.3;
-  max-width: 320px;
+  max-width: 328px;
   @include media-breakpoint-up(lg) {
     width: calc(100% / 3 - 16px);
+  }
+
+  &:nth-child(2) p:last-of-type span:last-child {
+    font-size: 20px;
+    @include media-breakpoint-up(xl) {
+      font-size: inherit;
+    }
   }
 
   + .data {
@@ -171,5 +190,12 @@ export default {
   line-height: 1;
   color: #fa6b62;
   margin-right: 14px;
+}
+
+.note {
+  font-size: 14px;
+  line-height: 1.3;
+  text-align: right;
+  color: #979797;
 }
 </style>

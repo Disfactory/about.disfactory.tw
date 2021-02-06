@@ -141,6 +141,7 @@ a {
   letter-spacing: 0.7px;
   color: #697f01;
   font-weight: 700;
+  transition: background-color 0.2s;
 
   &:hover {
     background-color: #eaf3bf;

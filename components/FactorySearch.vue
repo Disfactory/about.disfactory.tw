@@ -389,6 +389,7 @@ legend {
     color: #fff;
     font-weight: 700;
     max-width: 82px;
+    transition: background-color 0.2s, border-color 0.2s;
 
     &:hover {
       background-color: #2b4754;

@@ -195,6 +195,7 @@ a {
   font-size: 20px;
   padding: 12px 28px;
   display: inline-block;
+  transition: background-color 0.2s;
   @include media-breakpoint-up(lg) {
     flex-shrink: 0;
   }
