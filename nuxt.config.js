@@ -1,4 +1,6 @@
-import regions from './constants/regions.json'
+import { cities, towns } from './constants/regions.json'
+
+const BASE_URL = '/about.disfactory.tw/'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -6,28 +8,56 @@ export default {
 
   generate: {
     routes() {
-      return Promise.resolve(
-        // eslint-disable-next-line no-constant-condition
-        false
-          ? [regions.all].concat(regions.citiesAndCounties, regions.towns)
-          : [regions.all].concat(regions.citiesAndCounties)
-      )
+      // return cities
+      //   .concat(
+      //     towns.flatMap((townsInCity, idx) =>
+      //       Object.keys(townsInCity).map((town) => `${cities[idx]}${town}`)
+      //     )
+      //   )
+      //   .map((name) => `/region/${name}`)
+      return [cities[4]]
+        .concat(Object.keys(towns[4]).map((town) => `${cities[4]}${town}`))
+        .map((name) => ({ route: `/region/${name}`, payload: { name } }))
+    },
+  },
+
+  hooks: {
+    'vue-renderer': {
+      spa: {
+        prepareContext({ head, payload }) {
+          if (payload) {
+            head.meta.push({
+              hid: 'og:image',
+              property: 'og:image',
+              content: `${BASE_URL}og-imgs/${payload.name}.png`,
+            })
+          }
+        },
+      },
     },
   },
 
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
+  router: {
+    base: BASE_URL,
+  },
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'about.disfactory.tw',
+    title: '農地違章工廠回報 | 地球公民基金會',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'zh-Hant',
     },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        hid: 'description',
+        name: 'description',
+        content: '你的回報是行動的開始，有大宗回報，政府才有動起來的壓力',
+      },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
@@ -43,7 +73,10 @@ export default {
   plugins: ['~/plugins/vue-plugins-global.js', '~/plugins/axios.js'],
 
   proxy: {
-    '/api': 'https://staging.disfactory.tw',
+    '/api':
+      process.env.NODE_ENV === 'production'
+        ? 'https://api.disfactory.tw'
+        : 'https://staging.disfactory.tw',
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
