@@ -198,7 +198,9 @@ export default {
       }
 
       try {
-        if (form.city === '') {
+        const doesHaveCity = form.city !== ''
+
+        if (!doesHaveCity) {
           const { factories, documents } = await ctx.$fetchDisfactoryData(
             '/api/statistics/factories'
           )
@@ -233,6 +235,14 @@ export default {
             region,
             factories,
             documents,
+          }
+        }
+
+        {
+          const newPath = doesHaveCity ? `/region/${stats.region}/` : '/'
+
+          if (newPath !== decodeURIComponent(root.$route.path)) {
+            window.history.pushState(null, '', `.${newPath}`)
           }
         }
       } catch (err) {
