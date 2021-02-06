@@ -107,15 +107,15 @@ export default {
         return
       }
 
-      if (region === '全臺灣') {
+      if (region.length <= 4) {
         return region
       }
 
       if (region.startsWith('南海諸島')) {
         return `${region.slice(0, 4)} ${region.slice(4)}`
+      } else {
+        return `${region.slice(0, 3)} ${region.slice(3)}`
       }
-
-      return `${region.slice(0, 3)} ${region.slice(3)}`
     })
 
     function formatNum(stats, name) {

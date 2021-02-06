@@ -1,6 +1,8 @@
 import { cities, towns } from './constants/regions.json'
 
-const BASE_URL = '/about.disfactory.tw/'
+const isProdEnv = process.env.NODE_ENV === 'production'
+
+const BASE_URL = isProdEnv ? '/about.disfactory.tw/' : '/'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -73,10 +75,9 @@ export default {
   plugins: ['~/plugins/vue-plugins-global.js', '~/plugins/axios.js'],
 
   proxy: {
-    '/api':
-      process.env.NODE_ENV === 'production'
-        ? 'https://api.disfactory.tw'
-        : 'https://staging.disfactory.tw',
+    '/api': isProdEnv
+      ? 'https://api.disfactory.tw'
+      : 'https://staging.disfactory.tw',
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components

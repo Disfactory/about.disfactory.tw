@@ -61,7 +61,13 @@
 </template>
 
 <script>
-import { ref, reactive, computed, watch } from '@vue/composition-api'
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onBeforeMount,
+} from '@vue/composition-api'
 import VueSelect from 'vue-select'
 import { cities as CITIES, towns as TOWNS } from '~/constants/regions.json'
 
@@ -103,7 +109,7 @@ export default {
       return form.city !== ''
     })
 
-    const wasSetFromOtherInputs = ref('false')
+    const wasSetFromOtherInputs = ref(false)
     watch([() => form.city, () => form.town], function ([city, town]) {
       if (wasSetFromOtherInputs.value) {
         wasSetFromOtherInputs.value = false
@@ -164,9 +170,25 @@ export default {
       }
     )
 
-    if (root.$route.path === '/') {
+    onBeforeMount(function () {
+      const { path, params } = root.$route
+
+      if (path !== '/') {
+        if (params.name.length > 4) {
+          if (params.name.startsWith('南海諸島')) {
+            form.city = params.name.slice(0, 4)
+            form.town = params.name.slice(4)
+          } else {
+            form.city = params.name.slice(0, 3)
+            form.town = params.name.slice(3)
+          }
+        } else {
+          form.city = params.name
+        }
+      }
+
       search()
-    }
+    })
 
     async function search() {
       let stats = {
