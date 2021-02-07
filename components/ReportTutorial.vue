@@ -11,18 +11,27 @@
           <div class="num">{{ step.num }}</div>
           <p>{{ step.title }}</p>
         </div>
-        <img :src="step.imgSrc" alt="" />
+        <picture>
+          <source
+            type="image/webp"
+            :srcset="require(`~/assets/imgs/${step.imgName}.webp`)"
+          />
+          <img :src="require(`~/assets/imgs/${step.imgName}.png`)" alt="" />
+        </picture>
       </div>
     </div>
 
     <div class="action">
-      <img
-        class="logo"
-        width="151"
-        height="151"
-        src="~/assets/imgs/logo.png"
-        alt=""
-      />
+      <picture>
+        <source type="image/webp" srcset="~/assets/imgs/logo.webp" />
+        <img
+          class="logo"
+          width="151"
+          height="151"
+          src="~/assets/imgs/logo.png"
+          alt=""
+        />
+      </picture>
 
       <div class="text">
         <p class="slogan">匿名、快速、方便</p>
@@ -58,17 +67,17 @@ export default {
         {
           num: 1,
           title: '拍照',
-          imgSrc: require('~/assets/imgs/factory-photo.png'),
+          imgName: 'factory-photo',
         },
         {
           num: 2,
           title: '標記地點+上傳',
-          imgSrc: require('~/assets/imgs/upload.png'),
+          imgName: 'upload',
         },
         {
           num: 3,
           title: '地球公民基金會幫你檢舉',
-          imgSrc: require('~/assets/imgs/report-help.png'),
+          imgName: 'report-help',
         },
       ],
     }
@@ -161,7 +170,6 @@ export default {
   width: 151px;
   margin: 0 auto 24px auto;
   @include media-breakpoint-up(lg) {
-    flex-shrink: 0;
     margin: 0 32px 0 0;
   }
 }

@@ -3,7 +3,13 @@
     <div class="navbar">
       <div class="container">
         <div class="logo">
-          <img src="~/assets/imgs/logo-and-exclam.png" alt="" />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="~/assets/imgs/logo-and-exclam.webp"
+            />
+            <img src="~/assets/imgs/logo-and-exclam.png" alt="" />
+          </picture>
           <h1>農地違章工廠</h1>
         </div>
 

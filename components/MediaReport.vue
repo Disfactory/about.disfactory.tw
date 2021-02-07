@@ -11,7 +11,13 @@
         rel="noopener"
       >
         <article>
-          <img :src="report.imgSrc" alt="" />
+          <picture>
+            <source
+              type="image/webp"
+              :srcset="require(`~/assets/imgs/${report.imgName}.webp`)"
+            />
+            <img :src="require(`~/assets/imgs/${report.imgName}.png`)" alt="" />
+          </picture>
           <h1>{{ report.title }}</h1>
           <div class="date">{{ report.date }}</div>
           <p>{{ report.description }}</p>
@@ -37,7 +43,7 @@ export default {
         {
           id: 1,
           href: 'https://www.newsmarket.com.tw/blog/132789/',
-          imgSrc: require('~/assets/imgs/news-and-market.png'),
+          imgName: 'news-and-market',
           title: '看準政府不會拆，違章工廠衝衝衝',
           date: '2020.05.26',
           description:
@@ -47,7 +53,7 @@ export default {
           id: 2,
           href:
             'https://www.twreporter.org/a/illegal-factory-on-agricultural-land-law-anniversary',
-          imgSrc: require('~/assets/imgs/the-reporter.png'),
+          imgName: 'the-reporter',
           title: '【工輔法修法週年進度追蹤】',
           date: '2020.06.22',
           description:
@@ -57,7 +63,7 @@ export default {
           id: 3,
           href:
             'https://www.businesstoday.com.tw/article/category/80392/post/202005270021/%E3%80%8C%E5%8D%B3%E5%A0%B1%E5%8D%B3%E6%8B%86%E3%80%8D%E8%B7%B3%E7%A5%A8%20%20%E9%81%95%E7%AB%A0%E5%B7%A5%E5%BB%A0%E5%9B%9B%E5%B9%B4%E5%A2%9E%E5%9B%9B%E7%99%BE%E5%A4%9A%E4%BB%B6',
-          imgSrc: require('~/assets/imgs/business-today.png'),
+          imgName: 'business-today',
           title: '「即報即拆」跳票 違章工廠四年增四百多件',
           date: '2020.05.27',
           description:

@@ -1,6 +1,9 @@
 <template>
   <footer>
-    <img src="~/assets/imgs/earth-and-g0v.png" alt="" />
+    <picture>
+      <source type="image/webp" srcset="~/assets/imgs/earth-and-g0v.webp" />
+      <img src="~/assets/imgs/earth-and-g0v.png" alt="" />
+    </picture>
 
     <div class="containr">
       <p class="contact">聯繫地球公民基金會</p>
