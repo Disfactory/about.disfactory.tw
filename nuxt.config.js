@@ -54,7 +54,7 @@ export default {
                 Object.keys(townsInCity).map((town) => `${cities[idx]}${town}`)
               )
             )
-            .map((name) => `/region/${name}`)
+            .map((name) => ({ route: `/region/${name}`, payload: { name } }))
             .concat([{ route: '/', payload: { name: '全臺灣' } }])
         : [cities[0]]
             .concat(Object.keys(towns[0]).map((town) => `${cities[0]}${town}`))
