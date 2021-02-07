@@ -40,7 +40,7 @@ import { ref } from '@vue/composition-api'
 import SvgFactory from '~/assets/imgs/factory-pink.svg?inline'
 import SvgSign from '~/assets/imgs/sign.svg?inline'
 
-import { OG_TITLE } from '~/constants/meta.js'
+import { SITE_TITLE } from '~/constants/meta.js'
 
 export default {
   name: 'FactoryDisplay',
@@ -78,7 +78,7 @@ export default {
       if (navigator.share) {
         try {
           await navigator.share({
-            title: OG_TITLE,
+            title: SITE_TITLE,
             text,
             url,
           })

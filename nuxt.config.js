@@ -1,8 +1,45 @@
 import { cities, towns } from './constants/regions.json'
-import { OG_TITLE } from './constants/meta.js'
+import { SITE_TITLE } from './constants/meta.js'
 
 const isProdEnv = process.env.NODE_ENV === 'production'
-const BASE_URL = isProdEnv ? '/about.disfactory.tw/' : '/'
+const SITE_URL = 'https://about.disfactory.tw/'
+
+const SITE_DESCRIPTION =
+  '你的回報是行動的開始，有大宗回報，政府才有動起來的壓力'
+const metaOg = [
+  { hid: 'og:title', property: 'og:title', content: SITE_TITLE },
+  {
+    hid: 'og:description',
+    property: 'og:description',
+    content: SITE_DESCRIPTION,
+  },
+  { hid: 'og:url', property: 'og:url', content: SITE_URL },
+  {
+    hid: 'og:image:type',
+    property: 'og:image:type',
+    content: 'image/png',
+  },
+  {
+    hid: 'og:image:width',
+    property: 'og:image:width',
+    content: '1500',
+  },
+  {
+    hid: 'og:image:height',
+    property: 'og:image:height',
+    content: '765',
+  },
+  { hid: 'og:type', property: 'og:type', content: 'website' },
+  { hid: 'og:site_name', property: 'og:site_name', content: SITE_TITLE },
+  { hid: 'og:locale', property: 'og:locale', content: 'zh_TW' },
+]
+const metaFb = [
+  { hid: 'fb:app_id', property: 'fb:app_id', content: '442237845975385' },
+  { hid: 'fb:pages', property: 'fb:pages', content: '148513668543221' },
+]
+const metaTwitter = [
+  { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
+]
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -31,7 +68,7 @@ export default {
             head.meta.push({
               hid: 'og:image',
               property: 'og:image',
-              content: `${BASE_URL}og-imgs/${payload.name}.png`,
+              content: `/og-imgs/${payload.name}.png`,
             })
           }
         },
@@ -43,12 +80,12 @@ export default {
   target: 'static',
 
   router: {
-    base: BASE_URL,
+    base: isProdEnv ? '/about.disfactory.tw/' : '/',
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: OG_TITLE,
+    title: SITE_TITLE,
     htmlAttrs: {
       lang: 'zh-Hant',
     },
@@ -58,10 +95,35 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: '你的回報是行動的開始，有大宗回報，政府才有動起來的壓力',
+        content: SITE_DESCRIPTION,
       },
+      ...metaOg,
+      ...metaFb,
+      ...metaTwitter,
+      { name: 'msapplication-TileColor', content: '#da532c' },
+      { name: 'theme-color', content: '#fff' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '32x32',
+        href: '/favicon-32x32.png',
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '16x16',
+        href: '/favicon-16x16.png',
+      },
+      {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: '/apple-touch-icon.png',
+      },
+      { rel: 'manifest', href: '/site.webmanifest' },
+      { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#5bbad5' },
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
