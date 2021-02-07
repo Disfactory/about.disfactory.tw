@@ -25,7 +25,12 @@
           <button type="button" @click="share">分享</button>
           <p v-if="shouldResponse">已複製連結！</p>
         </div>
-        <a class="where" href="https://disfactory.tw/" target="_blank"
+        <a
+          class="where"
+          href="https://disfactory.tw/"
+          target="_blank"
+          rel="noopener"
+          @click="$ga.event('new_year_campaign', 'go2report', 'campaign')"
           >在哪裏？！</a
         >
       </div>
@@ -68,7 +73,7 @@ export default {
     },
   },
 
-  setup() {
+  setup(_, { root: { context: ctx } }) {
     async function share() {
       const text =
         '🧧我肚子裡的年菜有被工廠加料嗎？🧧\n\r#農地違章工廠 #即報即拆 #拒絕污染 #加入回報 #disfactory'
@@ -91,6 +96,8 @@ export default {
       } else {
         copy(copiedText)
       }
+
+      ctx.$ga.event('new_year_campaign', 'share', url)
     }
 
     async function copy(text) {

@@ -271,6 +271,8 @@ export default {
       }
 
       emit('displayStats', stats)
+
+      ctx.$ga.event('new_year_campaign', 'search', stats.region)
     }
 
     return {

@@ -12,12 +12,16 @@
             <li
               v-for="item in navList"
               :key="item.id"
-              @click="scrollTo(item.id)"
+              @click="handleClick(item.id, item.evtAction)"
             >
               {{ item.text }}
             </li>
           </ul>
-          <a href="https://disfactory.tw/" target="_blank" rel="noopener"
+          <a
+            href="https://disfactory.tw/"
+            target="_blank"
+            rel="noopener"
+            @click="$ga.event('navigator', 'go2report', 'navigator')"
             >回報</a
           >
         </nav>
@@ -32,11 +36,21 @@
     <transition name="slide">
       <div v-if="shouldOpenSidebar" class="sidebar">
         <ul>
-          <li v-for="item in navList" :key="item.id" @click="scrollTo(item.id)">
+          <li
+            v-for="item in navList"
+            :key="item.id"
+            @click="handleClick(item.id, item.evtAction)"
+          >
             {{ item.text }}
           </li>
         </ul>
-        <a href="https://disfactory.tw/" target="_blank" rel="noopener">回報</a>
+        <a
+          href="https://disfactory.tw/"
+          target="_blank"
+          rel="noopener"
+          @click="$ga.event('navigator', 'go2report', 'navigator')"
+          >回報</a
+        >
       </div>
     </transition>
   </header>
@@ -55,7 +69,7 @@ export default {
     SvgClose,
   },
 
-  setup() {
+  setup(_, { root: { context: ctx } }) {
     const shouldOpenSidebar = ref(false)
 
     function toggleSidebar() {
@@ -63,6 +77,13 @@ export default {
     }
     function closeSidebar() {
       shouldOpenSidebar.value = false
+    }
+
+    function handleClick(id, evtAction) {
+      scrollTo(id)
+      closeSidebar()
+
+      ctx.$ga.event('navigator', evtAction)
     }
 
     async function scrollTo(id) {
@@ -75,8 +96,6 @@ export default {
         },
         ease: (t) => t * t * t,
       })
-
-      closeSidebar()
     }
 
     return {
@@ -87,25 +106,30 @@ export default {
         {
           id: 'do-you-know',
           text: '你知道嗎？',
+          evtAction: 'doyouknow',
         },
         {
           id: 'report',
           text: '回報系統',
+          evtAction: 'report_system_intro',
         },
         {
           id: 'current-results',
           text: '目前成果',
+          evtAction: 'current_results',
         },
         {
           id: 'faq',
           text: '常見問題',
+          evtAction: 'Q&A',
         },
         {
           id: 'media',
           text: '新聞報導',
+          evtAction: 'media',
         },
       ],
-      scrollTo,
+      handleClick,
     }
   },
 }

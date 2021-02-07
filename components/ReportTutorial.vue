@@ -31,7 +31,13 @@
         </p>
       </div>
 
-      <a href="https://disfactory.tw/" target="_blank">新增可疑工廠</a>
+      <a
+        href="https://disfactory.tw/"
+        target="_blank"
+        rel="noopener"
+        @click="$ga.event('introduction', 'go2report', 'intro')"
+        >新增可疑工廠</a
+      >
     </div>
   </div>
 </template>

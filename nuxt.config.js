@@ -142,6 +142,10 @@ export default {
       : 'https://staging.disfactory.tw',
   },
 
+  googleAnalytics: {
+    id: 'UA-154739393-1',
+  },
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -155,6 +159,8 @@ export default {
     '@nuxtjs/style-resources',
     // https://github.com/nuxt-community/svg-module
     '@nuxtjs/svg',
+    // https://github.com/nuxt-community/google-analytics-module
+    '@nuxtjs/google-analytics',
   ],
 
   modules: ['@nuxtjs/proxy'],
