@@ -32,7 +32,7 @@
       </div>
 
       <a
-        href="https://disfactory.tw/"
+        href="https://bit.ly/39WGOhR"
         target="_blank"
         rel="noopener"
         @click="$ga.event('introduction', 'go2report', 'intro')"

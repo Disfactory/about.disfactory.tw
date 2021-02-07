@@ -27,11 +27,11 @@
         </div>
         <a
           class="where"
-          href="https://disfactory.tw/"
+          href="https://bit.ly/2N1w2xN"
           target="_blank"
           rel="noopener"
           @click="$ga.event('new_year_campaign', 'go2report', 'campaign')"
-          >在哪裏？！</a
+          >在哪裡？！</a
         >
       </div>
     </div>

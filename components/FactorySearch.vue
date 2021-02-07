@@ -293,17 +293,14 @@ export default {
 
 <style lang="scss" scoped>
 .factory-search {
-  padding: 34px 16px 28px 16px;
+  padding: 34px 16px 56px 16px;
   background-color: #fff3e0;
   z-index: 9;
-  @include media-breakpoint-up(sm) {
-    padding: 34px 16px 38px 16px;
-  }
   @include media-breakpoint-up(md) {
-    padding: 60px 0 38px 0;
+    padding: 60px 0 56px 0;
   }
   @include media-breakpoint-up(xl) {
-    padding: 60px 6.8% 38px 0;
+    padding: 60px 6.8% 56px 0;
     position: relative;
   }
 }

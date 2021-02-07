@@ -28,7 +28,7 @@
         target="_blank"
         rel="noopener"
         >GitHub</a
-      >上。使用者回報資料目前尚未整理成開放資料與API。
+      >上。使用者回報資料未涉及個人資訊部分已整理成開放資料與API。
     </p>
   </footer>
 </template>

@@ -18,7 +18,7 @@
             </li>
           </ul>
           <a
-            href="https://disfactory.tw/"
+            href="https://bit.ly/2LrmHyP"
             target="_blank"
             rel="noopener"
             @click="$ga.event('navigator', 'go2report', 'navigator')"
@@ -45,7 +45,7 @@
           </li>
         </ul>
         <a
-          href="https://disfactory.tw/"
+          href="https://bit.ly/2LrmHyP"
           target="_blank"
           rel="noopener"
           @click="$ga.event('navigator', 'go2report', 'navigator')"
