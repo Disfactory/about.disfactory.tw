@@ -190,6 +190,8 @@ export default {
       search()
     })
 
+    const statsCache = {}
+
     async function search() {
       let stats = {
         region: undefined,
@@ -201,40 +203,58 @@ export default {
         const doesHaveCity = form.city !== ''
 
         if (!doesHaveCity) {
-          const { factories, documents } = await ctx.$fetchDisfactoryData(
-            '/api/statistics/factories'
-          )
+          const region = '全臺灣'
+          const cache = statsCache[region]
+          if (cache) {
+            stats = cache
+          } else {
+            const { factories, documents } = await ctx.$fetchDisfactoryData(
+              '/api/statistics/factories'
+            )
+            stats = {
+              region,
+              factories,
+              documents,
+            }
 
-          stats = {
-            region: '全臺灣',
-            factories,
-            documents,
+            statsCache[region] = stats
           }
         } else if (form.town === '') {
           const region = form.city
-          const { cities = {} } = await ctx.$fetchDisfactoryData(
-            `/api/statistics/factories?townname=${region}`
-          )
-          const { factories, documents } = cities?.[region] || {}
+          const cache = statsCache[region]
+          if (cache) {
+            stats = cache
+          } else {
+            const { cities = {} } = await ctx.$fetchDisfactoryData(
+              `/api/statistics/factories?townname=${region}`
+            )
+            const { factories, documents } = cities?.[region] || {}
+            stats = {
+              region,
+              factories,
+              documents,
+            }
 
-          stats = {
-            region,
-            factories,
-            documents,
+            statsCache[region] = stats
           }
         } else {
           const region = `${form.city}${form.town}`
-          const { cities = {} } = await ctx.$fetchDisfactoryData(
-            `/api/statistics/factories?townname=${region}`
-          )
+          const cache = statsCache[region]
+          if (cache) {
+            stats = cache
+          } else {
+            const { cities = {} } = await ctx.$fetchDisfactoryData(
+              `/api/statistics/factories?townname=${region}`
+            )
+            const { factories, documents } =
+              cities?.[form.city]?.towns?.[form.town] || {}
+            stats = {
+              region,
+              factories,
+              documents,
+            }
 
-          const { factories, documents } =
-            cities?.[form.city]?.towns?.[form.town] || {}
-
-          stats = {
-            region,
-            factories,
-            documents,
+            statsCache[region] = stats
           }
         }
 
