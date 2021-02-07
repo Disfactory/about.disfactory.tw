@@ -9,8 +9,13 @@ const { getNumWithCommas } = require('./utils/index.js')
 const OG_IMG_SCALE = 2.5
 
 const apiUrl =
+  // process.env.NODE_ENV === 'production'
+  //   ? `https://api.disfactory.tw/api/statistics/factories?level=town`
+  //   : `https://staging.disfactory.tw/api/statistics/factories?townname=${encodeURIComponent(
+  //       '基隆市'
+  //     )}&level=town`
   process.env.NODE_ENV === 'production'
-    ? `https://api.disfactory.tw/api/statistics/factories?level=town`
+    ? `https://staging.disfactory.tw/api/statistics/factories?level=town`
     : `https://staging.disfactory.tw/api/statistics/factories?townname=${encodeURIComponent(
         '基隆市'
       )}&level=town`
