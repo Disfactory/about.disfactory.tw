@@ -261,8 +261,8 @@ export default {
         {
           const newPath = doesHaveCity ? `/region/${stats.region}/` : '/'
 
-          if (newPath !== decodeURIComponent(root.$route.path)) {
-            window.history.pushState(null, '', `.${newPath}`)
+          if (newPath !== decodeURIComponent(document.location.pathname)) {
+            window.history.pushState(null, '', newPath)
           }
         }
       } catch (err) {
