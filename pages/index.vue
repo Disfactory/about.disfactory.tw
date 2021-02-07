@@ -5,6 +5,7 @@
     <div class="search">
       <FactorySearch
         class="search__factory-search"
+        @beforeSearch="isSearching = true"
         @displayStats="handleDisplayStats"
       />
       <FactoryDisplay
@@ -12,6 +13,7 @@
         :factories="factories"
         :documents="documents"
         :region="region"
+        :isSearching="isSearching"
       />
     </div>
 
@@ -155,7 +157,10 @@ export default {
 
     function handleDisplayStats(data) {
       stats.value = data
+      isSearching.value = false
     }
+
+    const isSearching = ref(false)
 
     return {
       totalFactories,
@@ -165,6 +170,7 @@ export default {
       region,
       factories,
       documents,
+      isSearching,
 
       handleDisplayStats,
     }

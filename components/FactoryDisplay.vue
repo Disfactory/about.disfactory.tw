@@ -6,18 +6,22 @@
 
     <div class="container">
       <div class="text">
-        <div class="factories">
-          <SvgSign class="sign-left" />
+        <div :class="{ hidden: isSearching }">
+          <div class="factories">
+            <SvgSign class="sign-left" />
 
-          <p>
-            <span>{{ factories }}</span
-            >工廠
+            <p>
+              <span>{{ factories }}</span
+              >工廠
+            </p>
+          </div>
+          <p class="documents">
+            {{ region }}有 {{ factories }}+ 疑似農地違章工廠<span>，</span
+            ><br />有 {{ documents }} 家已被檢舉
           </p>
         </div>
-        <p class="documents">
-          {{ region }}有 {{ factories }}+ 疑似農地違章工廠<span>，</span
-          ><br />有 {{ documents }} 家已被檢舉
-        </p>
+
+        <SvgLoading v-show="isSearching" class="loading" />
       </div>
 
       <div class="actions">
@@ -42,8 +46,10 @@
 
 <script>
 import { ref } from '@vue/composition-api'
+
 import SvgFactory from '~/assets/imgs/factory-pink.svg?inline'
 import SvgSign from '~/assets/imgs/sign.svg?inline'
+import SvgLoading from '~/assets/imgs/loading.svg?inline'
 
 import { SITE_TITLE } from '~/constants/meta.js'
 
@@ -53,6 +59,7 @@ export default {
   components: {
     SvgFactory,
     SvgSign,
+    SvgLoading,
   },
 
   props: {
@@ -70,6 +77,10 @@ export default {
       type: String,
       required: true,
       default: '',
+    },
+    isSearching: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -185,6 +196,7 @@ export default {
   font-size: 24px;
   margin-bottom: 20px;
   text-shadow: 0 2px 3px rgba(#000, 0.25);
+  position: relative;
   @include media-breakpoint-up(md) {
     margin-bottom: 28px;
   }
@@ -267,6 +279,15 @@ export default {
   }
 }
 
+.loading {
+  width: 64px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .actions {
   display: flex;
   align-items: flex-start;
@@ -346,5 +367,9 @@ button {
     right: 24px;
     bottom: 16px;
   }
+}
+
+.hidden {
+  visibility: hidden;
 }
 </style>

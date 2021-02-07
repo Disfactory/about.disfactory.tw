@@ -193,6 +193,8 @@ export default {
     const statsCache = {}
 
     async function search() {
+      emit('beforeSearch')
+
       let stats = {
         region: undefined,
         factories: undefined,
