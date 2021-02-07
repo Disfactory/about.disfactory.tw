@@ -22,12 +22,12 @@ const metaOg = [
   {
     hid: 'og:image:width',
     property: 'og:image:width',
-    content: '1500',
+    content: '1250',
   },
   {
     hid: 'og:image:height',
     property: 'og:image:height',
-    content: '765',
+    content: '638',
   },
   { hid: 'og:type', property: 'og:type', content: 'website' },
   { hid: 'og:site_name', property: 'og:site_name', content: SITE_TITLE },
@@ -47,16 +47,19 @@ export default {
 
   generate: {
     routes() {
-      // return cities
-      //   .concat(
-      //     towns.flatMap((townsInCity, idx) =>
-      //       Object.keys(townsInCity).map((town) => `${cities[idx]}${town}`)
-      //     )
-      //   )
-      //   .map((name) => `/region/${name}`)
-      return [cities[4]]
-        .concat(Object.keys(towns[4]).map((town) => `${cities[4]}${town}`))
-        .map((name) => ({ route: `/region/${name}`, payload: { name } }))
+      return isProdEnv
+        ? cities
+            .concat(
+              towns.flatMap((townsInCity, idx) =>
+                Object.keys(townsInCity).map((town) => `${cities[idx]}${town}`)
+              )
+            )
+            .map((name) => `/region/${name}`)
+            .concat([{ route: '/', payload: { name: '全臺灣' } }])
+        : [cities[0]]
+            .concat(Object.keys(towns[0]).map((town) => `${cities[0]}${town}`))
+            .map((name) => ({ route: `/region/${name}`, payload: { name } }))
+            .concat([{ route: '/', payload: { name: '全臺灣' } }])
     },
   },
 
@@ -78,10 +81,6 @@ export default {
 
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
-
-  router: {
-    base: isProdEnv ? '/about.disfactory.tw/' : '/',
-  },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {

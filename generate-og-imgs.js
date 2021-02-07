@@ -6,18 +6,17 @@ const imageminPngquant = require('imagemin-pngquant')
 
 const { getNumWithCommas } = require('./utils/index.js')
 
-const OG_IMG_SCALE = 2
-const baseApiUrl =
+const OG_IMG_SCALE = 2.5
+
+const apiUrl =
   process.env.NODE_ENV === 'production'
-    ? 'https://api.disfactory.tw/'
-    : 'https://staging.disfactory.tw/'
+    ? `https://api.disfactory.tw/api/statistics/factories?level=town`
+    : `https://staging.disfactory.tw/api/statistics/factories?townname=${encodeURIComponent(
+        '基隆市'
+      )}&level=town`
 
 axios
-  .get(
-    `${baseApiUrl}api/statistics/factories?townname=${encodeURIComponent(
-      '新竹市'
-    )}&level=town`
-  )
+  .get(apiUrl)
   .then((res) => {
     const { data = {} } = res || {}
 
