@@ -213,6 +213,7 @@ export default {
   font-size: 25px;
   line-height: 1.36;
   margin-bottom: 8px;
+  display: inline-block;
   @include media-breakpoint-up(md) {
     margin-bottom: 24px;
     font-size: 28px;
