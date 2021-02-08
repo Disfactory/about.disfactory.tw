@@ -25,6 +25,14 @@ input {
   letter-spacing: 0.48px;
 }
 
+textarea,
+input[type='text'],
+input[type='submit'],
+input[type='password'],
+input[type='email'] {
+  appearance: none;
+}
+
 button {
   letter-spacing: 0.86px;
   cursor: pointer;
