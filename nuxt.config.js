@@ -1,6 +1,7 @@
-import { cities, towns } from './constants/regions.json'
+import REGIONS from './constants/regions.js'
 import { SITE_TITLE } from './constants/meta.js'
 
+const { cities: CITIES, towns: TOWNS } = REGIONS
 const isProdEnv = process.env.NODE_ENV === 'production'
 const SITE_URL = 'https://about.disfactory.tw/'
 
@@ -48,16 +49,15 @@ export default {
   generate: {
     routes() {
       return isProdEnv
-        ? cities
-            .concat(
-              towns.flatMap((townsInCity, idx) =>
-                Object.keys(townsInCity).map((town) => `${cities[idx]}${town}`)
-              )
+        ? CITIES.concat(
+            TOWNS.flatMap((townsInCity, idx) =>
+              Object.keys(townsInCity).map((town) => `${CITIES[idx]}${town}`)
             )
+          )
             .map((name) => ({ route: `/region/${name}`, payload: { name } }))
             .concat([{ route: '/', payload: { name: '全臺灣' } }])
-        : [cities[0]]
-            .concat(Object.keys(towns[0]).map((town) => `${cities[0]}${town}`))
+        : [CITIES[0]]
+            .concat(Object.keys(TOWNS[0]).map((town) => `${CITIES[0]}${town}`))
             .map((name) => ({ route: `/region/${name}`, payload: { name } }))
             .concat([{ route: '/', payload: { name: '全臺灣' } }])
     },

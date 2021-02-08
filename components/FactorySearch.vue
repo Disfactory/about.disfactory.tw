@@ -65,7 +65,7 @@
 <script>
 import { reactive, computed, watch, onBeforeMount } from '@vue/composition-api'
 import VueSelect from 'vue-select'
-import { cities as CITIES, towns as TOWNS } from '~/constants/regions.json'
+import REGIONS from '~/constants/regions.js'
 
 import SvgTitle from '~/assets/imgs/title.svg?inline'
 import SvgMeat from '~/assets/imgs/meat.svg?inline'
@@ -73,6 +73,8 @@ import SvgFish from '~/assets/imgs/fish.svg?inline'
 import SvgTable from '~/assets/imgs/table.svg?inline'
 import SvgOpenIndicator from '~/assets/imgs/open-indicator.svg?inline'
 import SvgTriangle from '~/assets/imgs/triangle.svg?inline'
+
+const { cities: CITIES, towns: TOWNS } = REGIONS
 
 export default {
   name: 'FactorySearch',
