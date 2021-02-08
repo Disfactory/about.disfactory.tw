@@ -21,6 +21,7 @@
                 type="text"
                 placeholder="區號"
                 inputmode="numeric"
+                @keyup.enter="search"
               />
 
               <VueSelect
