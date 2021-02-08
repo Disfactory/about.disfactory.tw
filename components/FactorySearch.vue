@@ -55,6 +55,11 @@
             </div>
           </fieldset>
         </form>
+
+        <div class="location" @click="locate">
+          <SvgMapMark />
+          <div>{{ locateText }}</div>
+        </div>
       </div>
     </div>
 
@@ -63,7 +68,14 @@
 </template>
 
 <script>
-import { reactive, computed, watch, onBeforeMount } from '@vue/composition-api'
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onBeforeMount,
+} from '@vue/composition-api'
+import { get as axiosGet } from 'axios'
 import VueSelect from 'vue-select'
 import REGIONS from '~/constants/regions.js'
 
@@ -72,6 +84,7 @@ import SvgMeat from '~/assets/imgs/meat.svg?inline'
 import SvgFish from '~/assets/imgs/fish.svg?inline'
 import SvgTable from '~/assets/imgs/table.svg?inline'
 import SvgOpenIndicator from '~/assets/imgs/open-indicator.svg?inline'
+import SvgMapMark from '~/assets/imgs/map-marker.svg?inline'
 import SvgTriangle from '~/assets/imgs/triangle.svg?inline'
 
 const { cities: CITIES, towns: TOWNS } = REGIONS
@@ -87,6 +100,7 @@ export default {
     SvgFish,
     SvgTable,
     SvgOpenIndicator,
+    SvgMapMark,
     SvgTriangle,
   },
 
@@ -288,13 +302,66 @@ export default {
       ctx.$ga.event('new_year_campaign', 'search', stats.region)
     }
 
+    const locateState = ref('located')
+    const locateText = computed(() => {
+      switch (locateState.value) {
+        case 'locating':
+          return '取得位置中⋯'
+        case 'failure':
+          return '定位失敗，請改用手動輸入'
+        default:
+          return '取得目前位置'
+      }
+    })
+    function locate() {
+      locateState.value = 'locating'
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async function success(pos = {}) {
+            const { latitude, longitude } = pos.coords || {}
+            const {
+              data: { address = {} },
+            } =
+              // https://nominatim.org/release-docs/develop/api/Reverse/
+              await axiosGet(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=zh-TW`
+              )
+            form.zipCode = Number(address.postcode?.slice(0, 3)) || undefined
+
+            if (form.zipCode !== undefined) {
+              locateState.value = 'located'
+
+              root.$nextTick(function () {
+                search()
+              })
+            } else {
+              locateState.value = 'failure'
+            }
+          },
+          function failure(err = {}) {
+            locateState.value = 'failure'
+
+            // eslint-disable-next-line no-console
+            console.error(err)
+          }
+        )
+      } else {
+        locateState.value = 'failure'
+      }
+
+      ctx.$ga.event('new_year_campaign', 'locate')
+    }
+
     return {
       form,
       canSelectTown,
       CITIES,
       townsInCity,
-
       search,
+
+      locate,
+      locateText,
     }
   },
 }
@@ -306,14 +373,14 @@ export default {
 
 <style lang="scss" scoped>
 .factory-search {
-  padding: 34px 16px 56px 16px;
+  padding: 40px 16px 32px 16px;
   background-color: #fff3e0;
   z-index: 9;
   @include media-breakpoint-up(md) {
-    padding: 60px 0 56px 0;
+    padding: 60px 0 40px 0;
   }
   @include media-breakpoint-up(xl) {
-    padding: 60px 6.8% 56px 0;
+    padding: 60px 6.8% 40px 0;
     position: relative;
   }
 }
@@ -398,7 +465,7 @@ legend {
   margin-bottom: 10px;
   font-size: 18px;
   @include media-breakpoint-up(sm) {
-    margin-bottom: 16px;
+    margin-bottom: 15px;
   }
 }
 
@@ -511,6 +578,20 @@ input {
     .vs__actions {
       display: none;
     }
+  }
+}
+
+.location {
+  display: flex;
+  font-size: 14px;
+  margin-top: 15px;
+  align-items: center;
+  letter-spacing: 0;
+  cursor: pointer;
+  user-select: none;
+
+  svg {
+    margin-right: 8px;
   }
 }
 
