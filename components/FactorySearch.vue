@@ -17,7 +17,7 @@
 
             <div class="input-wrapper">
               <input
-                v-model.number="form.zipCode"
+                v-model.number="form.postcode"
                 type="text"
                 placeholder="區號"
                 inputmode="numeric"
@@ -106,7 +106,7 @@ export default {
 
   setup(_, { emit, root, root: { context: ctx } }) {
     const form = reactive({
-      zipCode: undefined,
+      postcode: undefined,
       city: '',
       town: '',
     })
@@ -122,7 +122,7 @@ export default {
     })
 
     let wasSetFromOtherInputs = false
-    const duplicateZipCode = {
+    const duplicatePostcode = {
       300: false,
       600: false,
     }
@@ -134,42 +134,42 @@ export default {
       }
 
       if (city !== '' && town !== '') {
-        const zipCode = TOWNS[CITIES.indexOf(city)][town]
+        const postcode = TOWNS[CITIES.indexOf(city)][town]
 
-        if (zipCode !== undefined) {
-          form.zipCode = zipCode
+        if (postcode !== undefined) {
+          form.postcode = postcode
 
-          if (duplicateZipCode[form.zipCode] === undefined) {
+          if (duplicatePostcode[form.postcode] === undefined) {
             wasSetFromOtherInputs = true
 
-            for (const prop in duplicateZipCode) {
-              duplicateZipCode[prop] = false
+            for (const prop in duplicatePostcode) {
+              duplicatePostcode[prop] = false
             }
-          } else if (duplicateZipCode[form.zipCode] === false) {
+          } else if (duplicatePostcode[form.postcode] === false) {
             wasSetFromOtherInputs = true
-            duplicateZipCode[form.zipCode] = true
+            duplicatePostcode[form.postcode] = true
           }
         } else {
-          form.zipCode = undefined
+          form.postcode = undefined
           form.town = ''
         }
       }
     })
 
     watch(
-      () => form.zipCode,
-      function (zipCode) {
+      () => form.postcode,
+      function (postcode) {
         if (wasSetFromOtherInputs) {
           wasSetFromOtherInputs = false
 
           return
         }
 
-        if (zipCode === undefined) {
+        if (postcode === undefined) {
           return
         }
 
-        if (zipCode.toString().length !== 3) {
+        if (postcode.toString().length !== 3) {
           form.city = ''
           form.town = ''
 
@@ -178,7 +178,7 @@ export default {
 
         for (let i = 0; i < TOWNS.length; i += 1) {
           const townsInCity = TOWNS[i]
-          const idxOfTownInCity = Object.values(townsInCity).indexOf(zipCode)
+          const idxOfTownInCity = Object.values(townsInCity).indexOf(postcode)
 
           if (idxOfTownInCity !== -1) {
             form.city = CITIES[i]
@@ -327,9 +327,9 @@ export default {
               await axiosGet(
                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=zh-TW`
               )
-            form.zipCode = Number(address.postcode?.slice(0, 3)) || undefined
+            form.postcode = Number(address.postcode?.slice(0, 3)) || undefined
 
-            if (form.zipCode !== undefined) {
+            if (form.postcode !== undefined) {
               locateState.value = 'located'
 
               root.$nextTick(function () {
