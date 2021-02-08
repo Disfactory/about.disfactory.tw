@@ -31,7 +31,12 @@
         target="_blank"
         rel="noopener"
         >GitHub</a
-      >上。使用者回報資料未涉及個人資訊部分已整理成開放資料與API。
+      >上。使用者回報資料未涉及個人資訊部分已整理成開放資料與<a
+        href="https://api.disfactory.tw/redoc/"
+        target="_blank"
+        rel="noopener"
+        >API</a
+      >。
     </p>
   </footer>
 </template>
