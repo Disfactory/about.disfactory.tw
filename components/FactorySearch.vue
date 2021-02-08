@@ -20,6 +20,7 @@
                 v-model.number="form.zipCode"
                 type="text"
                 placeholder="區號"
+                inputmode="numeric"
               />
 
               <VueSelect
