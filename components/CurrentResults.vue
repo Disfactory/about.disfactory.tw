@@ -252,8 +252,8 @@ export default {
         series: { dataLabels: { visible: true } },
         theme: {
           series: {
-            startColor: '#ececec',
-            endColor: '#b82118',
+            startColor: '#fffae7',
+            endColor: '#ff3a2e',
             borderWidth: 1,
             dataLabels: { color: '#333' },
           },
