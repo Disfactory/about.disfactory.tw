@@ -110,6 +110,10 @@ export default {
     })
 
     const wasSetFromOtherInputs = ref(false)
+    const duplicateZipCode = {
+      300: false,
+      600: false,
+    }
     watch([() => form.city, () => form.town], function ([city, town]) {
       if (wasSetFromOtherInputs.value) {
         wasSetFromOtherInputs.value = false
@@ -123,7 +127,16 @@ export default {
         if (zipCode !== undefined) {
           form.zipCode = zipCode
 
-          wasSetFromOtherInputs.value = true
+          if (duplicateZipCode[form.zipCode] === undefined) {
+            wasSetFromOtherInputs.value = true
+
+            for (const prop in duplicateZipCode) {
+              duplicateZipCode[prop] = false
+            }
+          } else if (duplicateZipCode[form.zipCode] === false) {
+            wasSetFromOtherInputs.value = true
+            duplicateZipCode[form.zipCode] = true
+          }
         } else {
           form.zipCode = undefined
           form.town = ''
