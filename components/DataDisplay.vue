@@ -24,7 +24,16 @@
         </div>
       </div>
 
-      <p class="note">資料來源｜農委會農業及農地資源盤查結果、本回報系統</p>
+      <p class="note">
+        資料來源｜<a
+          href="https://map.coa.gov.tw/farmland/survey.html"
+          target="_blank"
+          rel="noopener"
+          >農委會農業及農地資源盤查結果</a
+        >、<a href="https://disfactory.tw" target="_blank" rel="noopener"
+          >本回報系統</a
+        >
+      </p>
     </div>
   </div>
 </template>
@@ -197,5 +206,10 @@ export default {
   line-height: 1.3;
   text-align: right;
   color: #979797;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
 }
 </style>
