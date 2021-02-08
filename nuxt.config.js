@@ -136,10 +136,9 @@ export default {
   plugins: ['~/plugins/vue-plugins-global.js', '~/plugins/axios.js'],
 
   proxy: {
-    // '/api': isProdEnv
-    //   ? 'https://api.disfactory.tw'
-    //   : 'https://staging.disfactory.tw',
-    '/api': 'https://staging.disfactory.tw',
+    '/api': isProdEnv
+      ? 'https://api.disfactory.tw'
+      : 'https://staging.disfactory.tw',
   },
 
   googleAnalytics: {
