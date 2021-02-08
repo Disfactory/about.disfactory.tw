@@ -163,7 +163,11 @@ export default {
     '@nuxtjs/google-analytics',
   ],
 
-  modules: ['@nuxtjs/proxy'],
+  modules: [
+    '@nuxtjs/proxy',
+    // https://www.npmjs.com/package/@nuxtjs/google-tag-manager
+    ['@nuxtjs/google-tag-manager', { id: 'GTM-WK2GJPS' }],
+  ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
