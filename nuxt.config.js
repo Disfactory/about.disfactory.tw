@@ -166,7 +166,7 @@ export default {
   modules: [
     '@nuxtjs/proxy',
     // https://www.npmjs.com/package/@nuxtjs/google-tag-manager
-    ['@nuxtjs/google-tag-manager', { id: 'GTM-WK2GJPS' }],
+    ['@nuxtjs/google-tag-manager', { id: 'GTM-PBNT8WM' }],
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
