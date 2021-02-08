@@ -62,13 +62,7 @@
 </template>
 
 <script>
-import {
-  ref,
-  reactive,
-  computed,
-  watch,
-  onBeforeMount,
-} from '@vue/composition-api'
+import { reactive, computed, watch, onBeforeMount } from '@vue/composition-api'
 import VueSelect from 'vue-select'
 import { cities as CITIES, towns as TOWNS } from '~/constants/regions.json'
 
@@ -110,14 +104,14 @@ export default {
       return form.city !== ''
     })
 
-    const wasSetFromOtherInputs = ref(false)
+    let wasSetFromOtherInputs = false
     const duplicateZipCode = {
       300: false,
       600: false,
     }
     watch([() => form.city, () => form.town], function ([city, town]) {
-      if (wasSetFromOtherInputs.value) {
-        wasSetFromOtherInputs.value = false
+      if (wasSetFromOtherInputs) {
+        wasSetFromOtherInputs = false
 
         return
       }
@@ -129,13 +123,13 @@ export default {
           form.zipCode = zipCode
 
           if (duplicateZipCode[form.zipCode] === undefined) {
-            wasSetFromOtherInputs.value = true
+            wasSetFromOtherInputs = true
 
             for (const prop in duplicateZipCode) {
               duplicateZipCode[prop] = false
             }
           } else if (duplicateZipCode[form.zipCode] === false) {
-            wasSetFromOtherInputs.value = true
+            wasSetFromOtherInputs = true
             duplicateZipCode[form.zipCode] = true
           }
         } else {
@@ -148,8 +142,8 @@ export default {
     watch(
       () => form.zipCode,
       function (zipCode) {
-        if (wasSetFromOtherInputs.value) {
-          wasSetFromOtherInputs.value = false
+        if (wasSetFromOtherInputs) {
+          wasSetFromOtherInputs = false
 
           return
         }
@@ -173,7 +167,7 @@ export default {
             form.city = CITIES[i]
             form.town = Object.keys(townsInCity)[idxOfTownInCity]
 
-            wasSetFromOtherInputs.value = true
+            wasSetFromOtherInputs = true
 
             return
           }
