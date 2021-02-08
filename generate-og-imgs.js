@@ -19,12 +19,14 @@ axios
   .get(apiUrl)
   .then((res) => {
     const { data = {} } = res || {}
+    const updatedTime = Date.now()
 
     return [
       {
         region: '全臺灣',
         factories: data.factories,
         documents: data.documents,
+        updatedTime,
       },
     ].concat(
       Object.entries(data.cities).flatMap(([city, cityData]) => {
@@ -33,19 +35,73 @@ axios
             region: city,
             factories: cityData.factories,
             documents: cityData.documents,
+            updatedTime,
           },
           ...Object.entries(cityData.towns).map(([town, townData]) => {
             return {
               region: `${city} ${town}`,
               factories: townData.factories,
               documents: townData.documents,
+              updatedTime,
             }
           }),
         ]
       })
     )
   })
-  .then(async (data) => {
+  .then(function processCache(data) {
+    const cache = require('./og-imgs-cache.json')
+    const newCache = JSON.parse(JSON.stringify(cache))
+
+    // Compared with the cache
+    const updatedData = data
+      .filter(function (newItem) {
+        const region = newItem.region.replace(' ', '')
+        const cachedItem = newCache[region]
+
+        if (!cachedItem) {
+          newCache[region] = newItem
+          return true
+        }
+
+        if (
+          cachedItem.factories === newItem.factories &&
+          cachedItem.documents === newItem.documents
+        ) {
+          return false
+        }
+
+        if (cachedItem.factories !== newItem.factories) {
+          newCache[region].factories = newItem.factories
+        }
+        if (cachedItem.documents !== newItem.documents) {
+          newCache[region].documents = newItem.documents
+        }
+        newCache[region].updatedTime = newItem.updatedTime
+        return true
+      })
+      .map(function (newItem) {
+        const region = newItem.region.replace(' ', '')
+        return {
+          ...newItem,
+          oldUpdatedTime: cache[region]?.updatedTime || undefined,
+        }
+      })
+
+    // Write the cache
+    fs.writeFile(
+      './og-imgs-cache.json',
+      JSON.stringify(newCache),
+      function callback(err) {
+        if (err) {
+          throw new Error('Failed to write the og-images cache file.')
+        }
+      }
+    )
+
+    return updatedData
+  })
+  .then(async function generateOgImgs(data) {
     const { ctx, canvas, bgImg } = await initOgImg()
 
     data.forEach((item) => {
@@ -70,7 +126,7 @@ async function initOgImg() {
 
 async function generateOgImg(
   { ctx, canvas, bgImg },
-  { region, factories, documents }
+  { region, factories, documents, updatedTime, oldUpdatedTime }
 ) {
   const { width: ogImgW, height: ogImgH } = canvas
 
@@ -148,9 +204,18 @@ async function generateOgImg(
     const buffer = await imagemin.buffer(canvas.toBuffer(), {
       plugins: [imageminPngquant()],
     })
+    const name = region.replace(' ', '')
+
+    if (oldUpdatedTime) {
+      fs.unlink(`./static/og-imgs/${name}-${oldUpdatedTime}.png`, (err) => {
+        if (err) {
+          throw err
+        }
+      })
+    }
 
     fs.writeFile(
-      `./static/og-imgs/${region.replace(' ', '')}.png`,
+      `./static/og-imgs/${name}-${updatedTime}.png`,
       buffer,
       function callback(err) {
         if (err) {

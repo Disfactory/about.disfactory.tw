@@ -1,5 +1,6 @@
 import REGIONS from './constants/regions.js'
 import { SITE_TITLE } from './constants/meta.js'
+import ogImgsCache from './og-imgs-cache.json'
 
 const { cities: CITIES, towns: TOWNS } = REGIONS
 const isProdEnv = process.env.NODE_ENV === 'production'
@@ -68,10 +69,12 @@ export default {
       spa: {
         prepareContext({ head, payload }) {
           if (payload) {
+            const region = payload.name
+            const { updatedTime } = ogImgsCache[region]
             head.meta.push({
               hid: 'og:image',
               property: 'og:image',
-              content: `/og-imgs/${payload.name}.png`,
+              content: `/og-imgs/${region}-${updatedTime}.png`,
             })
           }
         },
