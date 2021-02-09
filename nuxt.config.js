@@ -15,7 +15,6 @@ const metaOg = [
     property: 'og:description',
     content: SITE_DESCRIPTION,
   },
-  { hid: 'og:url', property: 'og:url', content: SITE_URL },
   {
     hid: 'og:image:type',
     property: 'og:image:type',
@@ -74,7 +73,14 @@ export default {
             head.meta.push({
               hid: 'og:image',
               property: 'og:image',
-              content: `/og-imgs/${region}-${updatedTime}.png`,
+              content: `${SITE_URL}og-imgs/${region}-${updatedTime}.png`,
+            })
+            head.meta.push({
+              hid: 'og:url',
+              property: 'og:url',
+              content: `${SITE_URL}${
+                region !== '全臺灣' ? `region/${region}/` : ''
+              }`,
             })
           }
         },
