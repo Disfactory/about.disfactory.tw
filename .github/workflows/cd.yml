@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - production
+  schedule:
+    # Translate the cron schedule into human-readable format: https://crontab.guru/
+    # every day at midnight
+    - cron: '0 0 * * *'
 
 jobs:
   cd:
