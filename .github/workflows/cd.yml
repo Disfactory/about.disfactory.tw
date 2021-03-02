@@ -47,8 +47,12 @@ jobs:
             git push origin dev
           fi
 
-      - name: Checkout production branch
-        run: git checkout production
+      - name: Update production branch
+        run: |
+          git fetch origin production
+          git checkout production
+          git rebase dev
+          git push origin production
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
