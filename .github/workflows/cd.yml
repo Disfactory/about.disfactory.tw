@@ -32,7 +32,7 @@ jobs:
       - name: Build
         run: yarn run build
 
-      - name: Push to dev branch
+      - name: Push to dev & production branch
         run: |
           if [ -n "$(git diff --exit-code)" ]
           then
@@ -45,13 +45,10 @@ jobs:
             git add -A
             git commit -m "feat: update the OG images & og-imgs-cache.json"
             git push origin dev
+            git checkout production
+            git cherry-pick dev@{0}
+            git push origin production
           fi
-
-      - name: Update production branch
-        run: |
-          git checkout production
-          git cherry-pick dev@{0}
-          git push origin production
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
