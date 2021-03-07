@@ -2,16 +2,12 @@
   <div class="current-results">
     <BaseSubtitle text="目前成果" class="current-results__base-subtitle" />
 
-    <div class="result result--bar">
+    <div class="result result--chart">
       <h3>各縣市回報進度</h3>
       <p class="description">來看看哪個縣市回報的比例最高？</p>
 
       <div class="chart">
-        <BarChart
-          v-if="reportsRateBarChart.data.value !== 'no data'"
-          :data="reportsRateBarChart.data.value"
-          :options="reportsRateBarChart.options"
-        />
+        <div ref="barChartDom"></div>
       </div>
 
       <div class="legend">
@@ -32,16 +28,12 @@
       <div>累積回報人次</div>
     </div>
 
-    <div class="result result--heatmap">
+    <div class="result result--chart">
       <h3>各縣市處理進度排行</h3>
       <p class="description">來看看哪個縣市處理得最快？哪個縣市吊車尾？</p>
 
       <div class="chart">
-        <HeatmapChart
-          v-if="progressHeatmapChart.data.value !== 'no data'"
-          :data="progressHeatmapChart.data.value"
-          :options="progressHeatmapChart.options"
-        />
+        <div ref="heatmapChartDom"></div>
       </div>
 
       <p class="note">備註：{{ citiesNoDocuments.join('、') }}還沒有檢舉成案</p>
@@ -50,25 +42,28 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive, ref } from '@vue/composition-api'
-import '@toast-ui/chart/dist/toastui-chart.min.css'
+import { computed, onMounted, ref } from '@vue/composition-api'
+import { init, use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
 import {
-  barChart as BarChart,
-  heatmapChart as HeatmapChart,
-} from '@toast-ui/vue-chart'
+  GridComponent,
+  TooltipComponent,
+  VisualMapComponent,
+} from 'echarts/components'
+import { BarChart, HeatmapChart } from 'echarts/charts'
 
 import BaseSubtitle from '~/components/BaseSubtitle.vue'
 
 import SvgDialog from '~/assets/imgs/dialog.svg?inline'
 import SvgPhotoHtml from '~/assets/imgs/take-a-photo.svg?inline'
 
+const PROGRESS = Object.freeze(['未處理', '處理中', '已斷電', '已拆除'])
+
 export default {
   name: 'CurrentResults',
 
   components: {
     BaseSubtitle,
-    BarChart,
-    HeatmapChart,
 
     SvgDialog,
     SvgPhotoHtml,
@@ -83,12 +78,141 @@ export default {
   },
 
   setup(_, { root: { context: ctx } }) {
+    const barChartDom = ref(null)
+    const heatmapChartDom = ref(null)
     const reportRates = ref([])
     const progresses = ref([])
     const citiesNoDocuments = ref([])
 
-    onMounted(function () {
-      fetchStatsTotal()
+    onMounted(async function () {
+      await fetchStatsTotal()
+
+      use([
+        GridComponent,
+        TooltipComponent,
+        VisualMapComponent,
+        BarChart,
+        HeatmapChart,
+        CanvasRenderer,
+      ])
+      const Y_AXIS_ITEM_HEIGHT = 48
+      const sharedTextStyle = {
+        color: '#333',
+        fontFamily:
+          'Helvetica, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, "Noto Sans CJK TC", "Noto Sans CJK", "Source Han Sans", "PingFang TC", "Hiragino Sans GB", "Microsoft JhengHei", sans-serif',
+      }
+      const sharedYAxisLabel = { fontSize: 16, margin: 16 }
+
+      const totalReportRates = reportRates.value.length
+      const reportsRateBarChart = init(barChartDom.value, 'light', {
+        height: Y_AXIS_ITEM_HEIGHT * totalReportRates,
+      })
+      const maxRate = reportRates.value[totalReportRates - 1]
+      let xAxisMax
+      if (maxRate !== undefined) {
+        xAxisMax = roundToNearest10(maxRate.value * 2)
+      }
+      reportsRateBarChart.setOption({
+        xAxis: {
+          type: 'value',
+          axisLabel: { formatter: '{value}%', fontSize: 14, margin: 16 },
+          min: 0,
+          max: xAxisMax,
+        },
+        yAxis: {
+          type: 'category',
+          data: reportRates.value.map(getCity),
+          axisLabel: sharedYAxisLabel,
+        },
+        series: [
+          {
+            name: '回報率',
+            type: 'bar',
+            data: reportRates.value.map(getValue),
+            barWidth: 18,
+          },
+        ],
+        grid: { top: 0, right: 24, bottom: 0, left: 8, containLabel: true },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+        },
+        color: ['#fa6b62'],
+        textStyle: sharedTextStyle,
+      })
+
+      const progressHeatmapChart = init(heatmapChartDom.value, 'light', {
+        height: Y_AXIS_ITEM_HEIGHT * progresses.value.length,
+      })
+      const casesByCity = progresses.value.flatMap(getValue)
+      const maxCases = casesByCity.reduce(function (cases1, [, , cases2]) {
+        return Math.max(cases1, cases2)
+      }, 0)
+      progressHeatmapChart.setOption({
+        xAxis: {
+          type: 'category',
+          position: 'top',
+          data: PROGRESS,
+          zlevel: 1,
+          axisPointer: { type: 'none' },
+        },
+        yAxis: {
+          type: 'category',
+          data: progresses.value.map(getCity),
+          axisLabel: sharedYAxisLabel,
+          zlevel: 1,
+        },
+        series: [
+          {
+            type: 'heatmap',
+            data: casesByCity,
+            label: { show: true },
+            itemStyle: {
+              borderWidth: 1,
+              borderColor: '#fff',
+            },
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 8,
+                shadowColor: 'rgba(0, 0, 0, 0.4)',
+              },
+            },
+          },
+        ],
+        visualMap: {
+          min: 0,
+          max: roundToNearest10(maxCases),
+          inRange: {
+            color: ['#ececec', '#fff9e6', '#fc9e91', '#e9382d', '#b82118'],
+          },
+          orient: 'horizontal',
+          left: 'center',
+          text: ['件數'],
+          textGap: 16,
+          calculable: true,
+          padding: 0,
+          itemHeight: 184,
+        },
+        grid: { top: 8, right: 0, left: 8, containLabel: true },
+        tooltip: {},
+        textStyle: sharedTextStyle,
+        media: [
+          {
+            query: { minWidth: 320 },
+            option: {
+              xAxis: { axisLabel: { fontSize: 14, margin: 12 } },
+            },
+          },
+          {
+            option: {
+              xAxis: { axisLabel: { fontSize: 12, margin: 12 } },
+            },
+          },
+        ],
+      })
+
+      window.addEventListener('resize', resizeCharts)
+      window.addEventListener('orientationchange', resizeCharts)
 
       async function fetchStatsTotal() {
         const response = await ctx.$fetchDisfactoryData('/api/statistics/total')
@@ -99,7 +223,7 @@ export default {
         )
 
         reportRates.value = entries
-          .map(function getReportRate([city, data]) {
+          .map(function transformContent([city, data]) {
             return {
               city,
               value: Number(
@@ -108,18 +232,20 @@ export default {
             }
           })
           .sort(function ascendByValue(a, b) {
-            return b.value - a.value
+            return a.value - b.value
           })
 
         progresses.value = entries
-          .map(function getProgress([city, data]) {
+          .sort(function ascendByStage1([, data1], [, data2]) {
+            return data1[PROGRESS[0]] - data2[PROGRESS[0]]
+          })
+          .map(function transformContent([city, data], cityIdx) {
             return {
               city,
-              value: [data.未處理, data.處理中, data.已斷電, data.已拆除],
+              value: PROGRESS.map(function buildValue(stage, stageIdx) {
+                return [stageIdx, cityIdx, data[stage]]
+              }),
             }
-          })
-          .sort(function ascendByNotBeProcessed(a, b) {
-            return b.value[0] - a.value[0]
           })
 
         citiesNoDocuments.value = entries
@@ -130,150 +256,16 @@ export default {
             return city
           })
       }
-    })
 
-    const commonOptions = {
-      exportMenu: { visible: false },
-      usageStatistics: false,
-    }
-    const commonThemes = {
-      xAxis: { label: { color: '#333', fontSize: 14 } },
-      yAxis: { label: { color: '#333', fontSize: 16 } },
-    }
-
-    let reportsRateBarChart
-    {
-      const xAxis = reactive({
-        label: { formatter: getPercent, margin: 4 },
-        scale: computed(() => {
-          const maxRate = reportRates.value[0]
-
-          if (maxRate === undefined) {
-            return {}
-          }
-
-          const max = roundToNearest10(maxRate.value * 2)
-
-          return {
-            min: 0,
-            max,
-            stepSize: max / 5,
-          }
-
-          function roundToNearest10(num) {
-            return Math.ceil(Math.ceil(num) / 10) * 10
-          }
-        }),
-      })
-
-      reportsRateBarChart = {
-        data: computed(() => {
-          if (reportRates.value.length <= 0) {
-            return 'no data'
-          }
-
-          return {
-            categories: reportRates.value.map(getCity),
-            series: [
-              {
-                name: '回報率',
-                data: reportRates.value.map(getValue),
-              },
-            ],
-          }
-        }),
-        options: {
-          chart: createChartInOptions(reportRates),
-          xAxis,
-          yAxis: { label: { margin: 8 } },
-          tooltip: { formatter: getPercent },
-          theme: {
-            series: { barWidth: 16, colors: ['#fa6b62'] },
-            ...commonThemes,
-          },
-          legend: { visible: false },
-          ...commonOptions,
-        },
+      function roundToNearest10(num) {
+        return Math.ceil(Math.ceil(num) / 10) * 10
       }
-    }
 
-    const progressHeatmapChart = {
-      data: computed(() => {
-        if (progresses.value.length <= 0) {
-          return 'no data'
-        }
-
-        return {
-          categories: {
-            x: ['未處理', '處理中', '已斷電', '已拆除'],
-            y: progresses.value.map(getCity),
-          },
-          series: progresses.value.map(getValue).reverse(),
-        }
-      }),
-      options: {
-        chart: createChartInOptions(progresses),
-        xAxis: { label: { margin: 4 } },
-        yAxis: { label: { margin: 16 } },
-        tooltip: {
-          formatter: (value) => `${value} 件`,
-          template(model, _, theme) {
-            const {
-              background,
-              borderColor,
-              borderWidth,
-              borderStyle,
-              borderRadius,
-            } = theme
-
-            const [item] = model.data
-            const [x, y] = item.label.split(', ')
-            const cities = progressHeatmapChart.data.value.categories.y
-            const label = `${x}, ${
-              cities[cities.length - cities.indexOf(y) - 1]
-            }`
-
-            return `
-              <div class="toastui-chart-tooltip" style="border: ${borderWidth}px ${borderStyle} ${borderColor}; border-radius: ${borderRadius}px; background: ${background};">
-                <div class="toastui-chart-tooltip-category" style="font-weight: bold; font-family: Arial, sans-serif; font-size: 13px; color: #ffffff;">${label}</div>
-                <div class="toastui-chart-tooltip-series-wrapper" style="font-weight: normal; font-family: Arial, sans-serif; font-size: 12px; color: #ffffff;">
-                  <div class="toastui-chart-tooltip-series">
-                    <span class="toastui-chart-series-name">
-                      <i class="toastui-chart-icon" style="background: ${item.color}"></i>
-                      <span class="toastui-chart-name">${item.formattedValue}</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            `
-          },
-        },
-        legend: { align: 'bottom', width: 256 },
-        series: { dataLabels: { visible: true } },
-        theme: {
-          series: {
-            startColor: '#fffae7',
-            endColor: '#ff3a2e',
-            borderWidth: 1,
-            dataLabels: { color: '#333' },
-          },
-          ...commonThemes,
-        },
-        ...commonOptions,
-      },
-    }
-
-    function createChartInOptions(data) {
-      return reactive({
-        width: 'auto',
-        height: computed(() => 48 * data.value.length),
-        animation: false,
-      })
-    }
-
-    function getPercent(num) {
-      return `${num}%`
-    }
+      function resizeCharts() {
+        reportsRateBarChart.resize()
+        progressHeatmapChart.resize()
+      }
+    })
 
     function getCity(item) {
       return item.city
@@ -287,11 +279,10 @@ export default {
     })
 
     return {
-      progresses,
-      reportsRateBarChart,
+      barChartDom,
       theLastCity,
 
-      progressHeatmapChart,
+      heatmapChartDom,
       citiesNoDocuments,
     }
   },
@@ -300,7 +291,7 @@ export default {
 
 <style lang="scss" scoped>
 .current-results {
-  padding: 40px 24px;
+  padding: 40px 16px;
   text-align: center;
   @include media-breakpoint-up(lg) {
     padding: 80px 40px;
@@ -315,15 +306,16 @@ export default {
 }
 
 .chart {
-  margin: 0 -8px;
+  margin-bottom: 40px;
   min-height: 816px; // 48 * 17
+  text-align: left;
 }
 
 .result {
   margin: 0 auto;
 
-  &--bar {
-    max-width: 504px;
+  &--chart {
+    max-width: 520px;
   }
 
   &--call {
@@ -347,10 +339,6 @@ export default {
       margin-bottom: 16px;
     }
   }
-
-  &--heatmap {
-    max-width: 544px;
-  }
 }
 
 h3 {
@@ -362,14 +350,15 @@ h3 {
 
 .description {
   font-size: 17px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .legend {
   font-size: 16px;
   display: flex;
   align-items: center;
-  padding-left: 12px;
+  padding-left: 6px;
+  text-align: left;
 
   span {
     width: 22px;
