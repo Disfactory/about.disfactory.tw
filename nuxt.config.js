@@ -179,9 +179,6 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    extend(config) {
-      // for @toast-ui/vue-chart
-      config.resolve.alias.vue = 'vue/dist/vue.common.js'
-    },
+    extend(config) {},
   },
 }

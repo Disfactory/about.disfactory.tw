@@ -23,12 +23,12 @@
   "dependencies": {
     "@nuxtjs/google-tag-manager": "^2.3.2",
     "@nuxtjs/proxy": "^2.1.0",
-    "@toast-ui/vue-chart": "^4.0.3",
     "@vue/composition-api": "^1.0.0-rc.1",
     "axios": "^0.21.1",
     "canvas": "^2.6.1",
     "clipboard-copy": "^4.0.1",
     "core-js": "^3.8.2",
+    "echarts": "^5.0.2",
     "imagemin": "^7.0.1",
     "imagemin-pngquant": "^9.0.1",
     "nuxt": "^2.14.12",
