@@ -38,5 +38,3 @@ PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 
 /*! clipboard-copy. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
-
-// @license RGB <-> HSV conversion utilities based off of http://www.cs.rit.edu/~ncs/color/t_convert.html
