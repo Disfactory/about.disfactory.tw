@@ -47,7 +47,7 @@
 <script>
 import { ref } from '@vue/composition-api'
 
-import SvgFactory from '~/assets/imgs/factory-pink.svg?inline'
+import SvgFactory from '~/assets/imgs/factory-1.svg?inline'
 import SvgSign from '~/assets/imgs/sign.svg?inline'
 import SvgLoading from '~/assets/imgs/loading.svg?inline'
 
@@ -140,11 +140,11 @@ export default {
 
 <style lang="scss" scoped>
 .factory-display {
-  background-color: #fa6b62;
+  background-color: #e5f3f3;
   position: relative;
   padding: 64px 22px 16px 22px;
   z-index: 9;
-  color: #fff;
+  color: #2b4754;
   text-align: center;
   @include media-breakpoint-up(sm) {
     padding: 64px 28px 16px 28px;
@@ -195,7 +195,6 @@ export default {
 .text {
   font-size: 24px;
   margin-bottom: 20px;
-  text-shadow: 0 2px 3px rgba(#000, 0.25);
   position: relative;
   @include media-breakpoint-up(md) {
     margin-bottom: 28px;
@@ -313,7 +312,9 @@ export default {
 button,
 .where {
   border-radius: 55px;
-  transition: background-color 0.2s, border-color 0.2s;
+  @media (hover: hover) {
+    transition: background-color 0.2s, color 0.2s;
+  }
 }
 
 .share {
@@ -336,33 +337,34 @@ button {
   height: 100%;
   background-color: #fff;
   border: none;
-  color: #457287;
   box-shadow: 0 2px 6px rgba(#000, 0.25);
-
-  &:hover {
-    background-color: #457287;
-    color: #fff;
+  @media (hover: hover) {
+    &:hover {
+      background-color: #2b4754;
+      color: #fff;
+    }
   }
 }
 
 .where {
-  background-color: #fa6b62;
-  border: 2px solid #fff;
-  color: #fff;
+  background-color: #cde9e4;
+  border: 2px solid #2b4754;
   margin-left: 6px;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  &:hover {
-    background-color: #ec554c;
-    border-color: #ec554c;
+  color: #2b4754;
+  @media (hover: hover) {
+    &:hover {
+      background-color: #96d0c6;
+    }
   }
 }
 
 .note {
   font-size: 14px;
   letter-spacing: 0;
+  color: #5f5f5f;
   @include media-breakpoint-up(md) {
     position: absolute;
     right: 24px;

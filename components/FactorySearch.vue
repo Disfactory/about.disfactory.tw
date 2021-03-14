@@ -3,13 +3,11 @@
     <SvgMeat class="meat" />
     <SvgFish class="fish" />
 
-    <SvgTable class="table" />
+    <SvgFood class="food" />
 
     <div class="container">
       <div class="wrapper">
-        <div class="title">
-          <SvgTitle />
-        </div>
+        <h2>我餐桌上的菜<br />有被工廠加料嗎？</h2>
 
         <form>
           <fieldset>
@@ -79,10 +77,9 @@ import { get as axiosGet } from 'axios'
 import VueSelect from 'vue-select'
 import REGIONS from '~/constants/regions.js'
 
-import SvgTitle from '~/assets/imgs/title.svg?inline'
 import SvgMeat from '~/assets/imgs/meat.svg?inline'
 import SvgFish from '~/assets/imgs/fish.svg?inline'
-import SvgTable from '~/assets/imgs/table.svg?inline'
+import SvgFood from '~/assets/imgs/food.svg?inline'
 import SvgOpenIndicator from '~/assets/imgs/open-indicator.svg?inline'
 import SvgMapMark from '~/assets/imgs/map-marker.svg?inline'
 import SvgTriangle from '~/assets/imgs/triangle.svg?inline'
@@ -95,10 +92,9 @@ export default {
   components: {
     VueSelect,
 
-    SvgTitle,
     SvgMeat,
     SvgFish,
-    SvgTable,
+    SvgFood,
     SvgOpenIndicator,
     SvgMapMark,
     SvgTriangle,
@@ -374,30 +370,33 @@ export default {
 <style lang="scss" scoped>
 .factory-search {
   padding: 40px 16px 32px 16px;
-  background-color: #fff3e0;
+  background-color: #effffc;
   z-index: 9;
   @include media-breakpoint-up(md) {
     padding: 60px 0 40px 0;
   }
+  @include media-breakpoint-up(lg) {
+    position: relative;
+  }
   @include media-breakpoint-up(xl) {
     padding: 60px 6.8% 40px 0;
-    position: relative;
   }
 }
 
-.title {
-  padding: 0 18px 20px 18px;
-  max-width: 333px;
-  @include media-breakpoint-up(sm) {
-    padding: 0 0 16px 0;
-  }
+h2 {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.4;
+  text-align: center;
+  letter-spacing: 0.86px;
+  color: #2b4754;
+  padding-bottom: 16px;
+  z-index: 9;
+  position: relative;
 
   @include media-breakpoint-up(md) {
-    padding: 0 0 40px 0;
-  }
-
-  svg {
-    width: 100%;
+    padding-bottom: 25px;
+    font-size: 42px;
   }
 }
 
@@ -409,37 +408,38 @@ export default {
   }
 }
 
-.table {
+.food {
   display: none;
   @include media-breakpoint-up(md) {
     display: block;
     position: absolute;
-    top: -56px;
-    left: 0;
-    transform: translateX(-50%);
+    top: -7px;
+    left: -26px;
   }
+
   @include media-breakpoint-up(lg) {
+    width: 221px;
+    left: -2px;
     top: auto;
-    bottom: 28px;
-    transform: translateX(-72%);
+    bottom: 96px;
+    z-index: -9;
   }
+
   @include media-breakpoint-up(xl) {
-    bottom: 40px;
-    transform: translateX(-60%);
-  }
-  @include media-breakpoint-up(xxl) {
-    transform: translateX(-32%);
+    width: 307px;
+    bottom: 32px;
+    left: -10px;
   }
 }
 
 .meat {
-  top: 58px;
-  left: -27px;
+  top: 15px;
+  left: -29px;
 }
 
 .fish {
   top: 2px;
-  right: -35px;
+  right: -21px;
 }
 
 .container {
@@ -481,18 +481,23 @@ legend {
   }
 
   button {
-    background-color: #457287;
-    border: 1px solid #457287;
+    background-color: #fa6b62;
+    border: none;
     border-radius: 44px;
     font-size: 20px;
     color: #fff;
     font-weight: 700;
     max-width: 82px;
-    transition: background-color 0.2s, border-color 0.2s;
+    @media (hover: hover) {
+      transition: background-color 0.2s;
 
-    &:hover {
-      background-color: #2b4754;
-      border-color: #2b4754;
+      &:hover {
+        background-color: #ec554c;
+      }
+    }
+
+    &:active {
+      background-color: #ec554c;
     }
   }
 }
@@ -566,7 +571,7 @@ input {
     letter-spacing: 0.48px;
 
     &--highlight {
-      background-color: #fa6b62;
+      background-color: #2b4754;
     }
   }
 

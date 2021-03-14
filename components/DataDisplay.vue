@@ -43,7 +43,7 @@ import { computed } from '@vue/composition-api'
 
 import BaseSubtitle from '~/components/BaseSubtitle.vue'
 
-import svgFactoryHtml from '~/assets/imgs/factory.svg?raw'
+import svgFactoryHtml from '~/assets/imgs/factory-2.svg?raw'
 import svgPaperHtml from '~/assets/imgs/paper.svg?raw'
 import svgPhotoHtml from '~/assets/imgs/take-a-photo.svg?raw'
 

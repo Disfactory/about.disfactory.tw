@@ -135,9 +135,14 @@ export default {
         grid: { top: 0, right: 24, bottom: 0, left: 8, containLabel: true },
         tooltip: {
           trigger: 'axis',
-          axisPointer: { type: 'shadow' },
+          axisPointer: {
+            type: 'shadow',
+            shadowStyle: {
+              color: 'rgba(229, 243, 243, 0.4)',
+            },
+          },
         },
-        color: ['#fa6b62'],
+        color: ['#107393'],
         textStyle: sharedTextStyle,
       })
 
@@ -173,8 +178,7 @@ export default {
             },
             emphasis: {
               itemStyle: {
-                shadowBlur: 8,
-                shadowColor: 'rgba(0, 0, 0, 0.4)',
+                borderWidth: 2,
               },
             },
           },
@@ -183,7 +187,7 @@ export default {
           min: 0,
           max: roundToNearest10(maxCases),
           inRange: {
-            color: ['#ececec', '#fff9e6', '#fc9e91', '#e9382d', '#b82118'],
+            color: ['#ececec', '#79abbc', '#3989a3', '#107393'],
           },
           orient: 'horizontal',
           left: 'center',
@@ -363,7 +367,7 @@ h3 {
   span {
     width: 22px;
     height: 22px;
-    background-color: #fa6b62;
+    background-color: #107393;
     margin-right: 16px;
     flex-shrink: 0;
   }

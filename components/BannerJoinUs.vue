@@ -24,7 +24,7 @@ export default {
 .banner-join-us {
   padding: 48px 24px;
   text-align: center;
-  background-color: #fff3e0;
+  background-color: #fff9e6;
   @include media-breakpoint-up(lg) {
     display: flex;
     align-items: center;
