@@ -114,7 +114,7 @@ async function initOgImg() {
   const ctx = canvas.getContext('2d')
   const bgImg = await loadImage('./assets/imgs/og-img-bg.png')
 
-  ctx.fillStyle = '#fff'
+  ctx.fillStyle = '#2b4754'
   ctx.textBaseline = 'top'
 
   return {
